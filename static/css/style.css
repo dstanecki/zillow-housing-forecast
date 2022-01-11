@@ -1,15 +1,15 @@
 h1 {
-    border: 2px #eee solid;
-    color: #0000cc;
-    text-align: center;
-    padding: 10px;
+  border: 2px #eee solid;
+  color: #0000cc;
+  text-align: center;
+  padding: 10px;
 }
 
 body {
-    text-align: center;
+  text-align: center;
 }
 form {
-    display: inline-block;
+  display: inline-block;
 }
 input[type=text], select {
   width: 50%;
@@ -43,33 +43,31 @@ div {
 }
 
 .forecast {
-	border-collapse: collapse;
-	width: 50%;
-	align: center;
-	margin-left: auto;
+  border-collapse: collapse;
+  width: 50%;
+  align: center;
+  margin-left: auto;
   margin-right: auto;
 }
 
 .center {
-	
-	margin-left: auto;
+  margin-left: auto;
   margin-right: auto;
 }
 
 .forecast td, .forecast th {
-	border: 1px solid #ddd;
+  border: 1px solid #ddd;
   padding: 8px;
-	align: center;
+  align: center;
 }
 
 .forecast th {
-	padding-top: 12px;
+  padding-top: 12px;
   padding-bottom: 12px;
   text-align: left;
   background-color: #04AA6D;
   color: white;
-	margin-left: auto;
-	margin-right: auto;
-	
-	align: center;
+  margin-left: auto;
+  margin-right: auto;	
+  align: center;
 }
