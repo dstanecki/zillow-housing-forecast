@@ -2,13 +2,13 @@ from flask import Flask, render_template, request, flash
 import mysql.connector
 import mariadb
 
-app = Flask(__name__)
+application = Flask(__name__)
 
-@app.route('/')
+@application.route('/')
 def index():
     return render_template('index.html')
     
-@app.route('/process', methods =['GET', 'POST'])
+@application.route('/process', methods =['GET', 'POST'])
 def process():
     zip = request.form['zip'] #takes ZIP code value from HTML POST form
     conn = mariadb.connect(host='IP', port= 3306, user='user', password='password', database='ZillowHomeValueForecast')
@@ -22,5 +22,5 @@ def process():
 if __name__ == "__main__":
     # Setting debug to True enables debug output. This line should be
     # removed before deploying a production app.
-    app.debug = True
-    app.run()
+    application.debug = True
+    application.run()
