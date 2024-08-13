@@ -9,13 +9,26 @@ def index():
     return render_template('index.html')
     
 @application.route('/process', methods =['GET', 'POST'])
+@application.route('/process', methods=['GET', 'POST'])
 def process():
-    zip = request.form['zip'] #takes ZIP code value from HTML POST form
-    conn = mariadb.connect(host='IP', port= 3306, user='user', password='password', database='ZillowHomeValueForecast')
-    cur = conn.cursor()
-    cur.execute("SELECT `COL 2`, `COL 7` FROM `forecast` WHERE `COL 2`=%s", (zip,)) #lists columns 2 and 7 which are ZIP code and 1-yr percent home value change respectively... where the entered ZIP matches a row in column 2
-    rows = cur.fetchall()
-    return render_template("index.html", rows = rows)
+    try:
+        zip_code = request.form['zip']
+        conn = mariadb.connect(host='mariadb', port=3306, user='root', password='password', database='ZillowHomeValueForecast')
+        cur = conn.cursor()
+        #cur.execute("SELECT `COL 2`, `COL 12` FROM `forecast` WHERE `COL 2`=%s", (zip_code,))
+        #cur.execute("SELECT `2025-07-31` FROM forecast WHERE RegionName = %s", (zip_code))
+        cur.execute("SELECT RegionName, `2025-07-31` FROM forecast WHERE RegionName=%s", (zip_code,))
+        rows = cur.fetchall()
+        if not rows:
+            error = "No data found for the provided ZIP code."
+            return render_template("index.html", error=error)
+        return render_template("index.html", rows=rows)
+    except mariadb.Error as e:
+        return render_template("index.html", error=str(e))
+    finally:
+        cur.close()
+        conn.close()
+
     
     
 # run the app.
@@ -23,4 +36,4 @@ if __name__ == "__main__":
     # Setting debug to True enables debug output. This line should be
     # removed before deploying a production app.
     application.debug = True
-    application.run()
+    application.run(host="0.0.0.0", port=5000)
