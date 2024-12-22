@@ -1,9 +1,9 @@
 services:
   app:
     build: .
-    image: dstanecki/zhf
+    image: zhf
     ports:
-      - "80:80"
+      - "5000:5000"
     depends_on:
       - mariadb
     environment:
@@ -13,7 +13,7 @@ services:
       - DB_NAME=ZillowHomeValueForecast
 
   mariadb:
-    image: dstanecki/zhf_db
+    image: mariadb
     environment:
       - MYSQL_ROOT_PASSWORD=password
       - MYSQL_DATABASE=ZillowHomeValueForecast
@@ -21,6 +21,7 @@ services:
       - "3306:3306"
     volumes:
       - mariadb_data:/var/lib/mysql
+      - ./data:/docker-entrypoint-initdb.d
 
 volumes:
   mariadb_data:
