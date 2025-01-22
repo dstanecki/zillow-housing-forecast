@@ -1,0 +1,182 @@
+{
+    "taskDefinitionArn": "arn:aws:ecs:us-east-1:165703855260:task-definition/zhf_self_managed:3",
+    "containerDefinitions": [
+        {
+            "name": "app",
+            "image": "165703855260.dkr.ecr.us-east-1.amazonaws.com/dstanecki/zhf:latest",
+            "cpu": 0,
+            "portMappings": [
+                {
+                    "name": "app-80-tcp",
+                    "containerPort": 80,
+                    "hostPort": 80,
+                    "protocol": "tcp",
+                    "appProtocol": "http"
+                }
+            ],
+            "essential": true,
+            "environment": [
+                {
+                    "name": "DB_NAME",
+                    "value": "ZillowHomeValueForecast"
+                },
+                {
+                    "name": "DB_HOST",
+                    "value": "mariadb"
+                },
+                {
+                    "name": "DB_USER",
+                    "value": "user"
+                },
+                {
+                    "name": "DB_PASSWORD",
+                    "value": "password"
+                }
+            ],
+            "environmentFiles": [],
+            "mountPoints": [],
+            "volumesFrom": [],
+            "dependsOn": [
+                {
+                    "containerName": "mariadb",
+                    "condition": "START"
+                }
+            ],
+            "hostname": "app",
+            "ulimits": [],
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "/ecs/zhf_self_managed",
+                    "mode": "non-blocking",
+                    "awslogs-create-group": "true",
+                    "max-buffer-size": "25m",
+                    "awslogs-region": "us-east-1",
+                    "awslogs-stream-prefix": "ecs"
+                },
+                "secretOptions": []
+            },
+            "systemControls": []
+        },
+        {
+            "name": "mariadb",
+            "image": "165703855260.dkr.ecr.us-east-1.amazonaws.com/dstanecki/zhf_db:latest",
+            "cpu": 0,
+            "portMappings": [
+                {
+                    "name": "mariadb-3306-tcp",
+                    "containerPort": 3306,
+                    "hostPort": 3306,
+                    "protocol": "tcp"
+                }
+            ],
+            "essential": true,
+            "environment": [
+                {
+                    "name": "MYSQL_DATABASE",
+                    "value": "ZillowHomeValueForecast"
+                },
+                {
+                    "name": "MYSQL_ROOT_PASSWORD",
+                    "value": "password"
+                }
+            ],
+            "environmentFiles": [],
+            "mountPoints": [
+                {
+                    "sourceVolume": "mariadb_data",
+                    "containerPath": "/var/lib/mysql",
+                    "readOnly": false
+                }
+            ],
+            "volumesFrom": [],
+            "hostname": "mariadb",
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "/ecs/zhf_self_managed",
+                    "mode": "non-blocking",
+                    "awslogs-create-group": "true",
+                    "max-buffer-size": "25m",
+                    "awslogs-region": "us-east-1",
+                    "awslogs-stream-prefix": "ecs"
+                },
+                "secretOptions": []
+            },
+            "systemControls": []
+        }
+    ],
+    "family": "zhf_self_managed",
+    "taskRoleArn": "arn:aws:iam::165703855260:role/ecsTaskExecutionRole",
+    "executionRoleArn": "arn:aws:iam::165703855260:role/ecsTaskExecutionRole",
+    "networkMode": "bridge",
+    "revision": 3,
+    "volumes": [
+        {
+            "name": "mariadb_data",
+            "dockerVolumeConfiguration": {
+                "scope": "task",
+                "driver": "overlay2"
+            }
+        }
+    ],
+    "status": "ACTIVE",
+    "requiresAttributes": [
+        {
+            "name": "ecs.capability.execution-role-awslogs"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.ecr-auth"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.17"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.28"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.task-iam-role"
+        },
+        {
+            "name": "ecs.capability.execution-role-ecr-pull"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.29"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.logging-driver.awslogs"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
+        },
+        {
+            "name": "ecs.capability.container-ordering"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.25"
+        },
+        {
+            "name": "ecs.capability.docker-plugin.overlay2"
+        }
+    ],
+    "placementConstraints": [],
+    "compatibilities": [
+        "EC2"
+    ],
+    "requiresCompatibilities": [
+        "EC2"
+    ],
+    "cpu": "1024",
+    "memory": "3072",
+    "runtimePlatform": {
+        "cpuArchitecture": "X86_64",
+        "operatingSystemFamily": "LINUX"
+    },
+    "registeredAt": "2024-12-31T23:21:02.591Z",
+    "registeredBy": "arn:aws:iam::165703855260:root",
+    "enableFaultInjection": false,
+    "tags": []
+}
