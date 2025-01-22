@@ -9,9 +9,8 @@ Prerequisites to run: Python, Flask
 1. Build the Dockerfile and name it
 2. Modify docker-compose.yaml if you're starting with the official mariadb container
 3. From a Git Bash command line:
-
-docker compose --build
-docker compose up -d
+* docker compose --build
+* docker compose up -d
 
 # Explaining the architecture and how it was set up
 
