@@ -7,8 +7,8 @@ Prerequisites to run: Python, Flask
 
 ## Instructions
 1. Build the Dockerfile and name it
-2. Rename docker-compose-old.yaml to docker-compose.yaml
-From a Git Bash command line:
+2. Modify docker-compose.yaml if you're starting with the official mariadb container
+3. From a Git Bash command line:
 
 docker compose --build
 docker compose up -d
