@@ -1,11 +1,16 @@
-# Zillow Housing Forecast
+# 🏡 Zillow Housing Forecast
 
-A web application that visualizes housing forecast data from Zillow. Supports multiple deployment methods including Kubernetes, Docker Compose, and AWS ECS.
+A containerized Python Flask web application that predicts the estimated one-year percent change in home values for any given ZIP code in the U.S.
+
+---
+
+## 🔍 About
+
+This project uses historical Zillow data to forecast housing market trends. The app is built with Python and Flask, backed by a MariaDB database, and can be deployed in various environments using Docker Compose, Kubernetes, or AWS ECS Fargate.
 
 ## How to run locally
 
-### Prerequisites
-Prerequisites to run: Python, Flask
+Prerequisites to build Docker container: Python, Flask
 
 ### Instructions
 1. Build the Dockerfile and name it
