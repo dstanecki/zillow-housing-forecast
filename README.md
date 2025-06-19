@@ -22,3 +22,6 @@ The back end container is based on the official mariaDB container. I inserted da
 
 # ECS Task Definition 
 Planning to replace the hardcoded credentials and need to figure out the best way to load data into ECS as an entrypoint script. 
+
+## Links
+Zillow Data: https://www.zillow.com/research/data/

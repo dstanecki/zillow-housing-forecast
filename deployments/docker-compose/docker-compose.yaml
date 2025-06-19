@@ -1,0 +1,31 @@
+services:
+  app:
+    build: .
+    image: dstanecki/zhf_5000
+    ports:
+      - "5000:5000"
+    labels:
+      - kompose.service.type=nodeport
+    depends_on:
+      - mariadb # Change this to mariadb if you don't have zhf_db created
+    environment:
+      - DB_HOST=mariadb
+      - DB_USER=user
+      - DB_PASSWORD=password
+      - DB_NAME=ZillowHomeValueForecast
+
+  mariadb:
+    image: dstanecki/zhf_db_arm64:latest # Change this to mariadb here if you don't have zhf_db created
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_DATABASE=ZillowHomeValueForecast
+    ports:
+      - "3306:3306"
+    labels:
+      kompose.volume.type: persistentVolumeClaim
+    volumes:
+      - mariadb_data:/var/lib/mysql
+      #- ./data:/docker-entrypoint-initdb.d # Keep this if you don't have zhf_db created, it will run the entrypoint script to import SQL data to the database
+
+volumes:
+  mariadb_data:

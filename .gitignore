@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg
+*.egg-info/
+dist/
+build/
+*.log
+
+# Virtual environments
+venv/
+env/
+*.env
+
+# Docker
+*.pid
+*.tar
+
+# VS Code / IDEs
+.vscode/
+.idea/
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Kubernetes and cloud artifacts (optional)
+*.bak
+*.tmp
+
+# Ignore secrets
+my-secret.yaml
