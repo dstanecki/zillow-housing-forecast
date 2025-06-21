@@ -19,12 +19,12 @@ data:
         Metro VARCHAR(50),
         CountyName VARCHAR(50),
         BaseDate DATE,
-        `2024-08-31` FLOAT,
-        `2024-10-31` FLOAT,
-        `2025-07-31` FLOAT
+        `2025-06-30` DECIMAL(4, 2),
+        `2025-08-31` DECIMAL(4, 2),
+        `2026-05-31` DECIMAL(4, 2)
     );
 
-    LOAD DATA INFILE '/docker-entrypoint-initdb.d/2024data.csv'
+    LOAD DATA LOCAL INFILE '/docker-entrypoint-initdb.d/data.csv'
     INTO TABLE forecast
     FIELDS TERMINATED BY ','
     ENCLOSED BY '"'

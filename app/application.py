@@ -24,7 +24,7 @@ def process():
         )
         cur = conn.cursor()
         # Execute the query
-        cur.execute("SELECT RegionName, `2025-07-31` FROM forecast WHERE RegionName=%s", (zip_code,))
+        cur.execute("SELECT RegionName, `2026-05-31` FROM forecast WHERE RegionName=%s", (zip_code,))
         rows = cur.fetchall()
         if not rows:
             error = "No data found for the provided ZIP code."

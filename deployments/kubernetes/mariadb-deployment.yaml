@@ -32,7 +32,7 @@ spec:
             - sh
             - -c
             - |
-              curl -L https://raw.githubusercontent.com/dstanecki/zillow-housing-forecast/refs/heads/main/data/2024data.csv -o /csv/2024data.csv
+              curl -L https://raw.githubusercontent.com/dstanecki/zillow-housing-forecast/refs/heads/main/data/data.csv -o /csv/data.csv
               cp /config/import-data.sql /csv/import-data.sql
           volumeMounts:
             - name: csv-data
