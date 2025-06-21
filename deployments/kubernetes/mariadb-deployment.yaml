@@ -44,7 +44,7 @@ spec:
               value: ZillowHomeValueForecast
             - name: MYSQL_ROOT_PASSWORD
               value: password
-          image: dstanecki/zhf_db:latest
+          image: mariadb:latest
           name: mariadb
           ports:
             - containerPort: 3306
@@ -52,9 +52,6 @@ spec:
           volumeMounts:
             - mountPath: /var/lib/mysql
               name: mariadb-data
-           # - mountPath: /docker-entrypoint-initdb.d/import-data.sql
-            #  name: dbcreation-script
-             # subPath: import-data.sql
             - mountPath: /docker-entrypoint-initdb.d
               name: csv-data
       restartPolicy: Always
