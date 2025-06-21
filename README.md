@@ -15,7 +15,7 @@ This project uses historical Zillow data to forecast housing market trends. The 
 
 ## 🧱 Architecture
 
-- **Frontend**: Multi-arch Python Flask app
+- **Frontend**: Multi-arch Python Flask app (linux/amd64 and linux/arm64 compatibility ensures that the container runs seamlessly on Raspberry Pi OS, GKE, EKS, etc.)
 - **Backend**: MariaDB with PersistentVolume. The database is automatically initialized and populated by dbcreation-script.yaml which is mounted as a ConfigMap
 - **Namespace**: `zhf`
 - **Storage**: Local PVC
