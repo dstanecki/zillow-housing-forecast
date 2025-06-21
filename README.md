@@ -2,6 +2,11 @@
 
 A containerized Python Flask web application that predicts the estimated one-year percent change in home values for any given ZIP code in the U.S.
 
+## ⚡ TL;DR: Quick Start
+```bash
+kubectl apply -f deployments/kubernetes/namespace.yaml
+kubectl apply -f deployments/kubernetes/ -n zhf
+```
 ---
 
 ## 🔍 About
@@ -11,7 +16,7 @@ This project uses historical Zillow data to forecast housing market trends. The 
 ## 🧱 Architecture
 
 - **Frontend**: Multi-arch Python Flask app
-- **Backend**: MariaDB with PersistentVolume
+- **Backend**: MariaDB with PersistentVolume. The database is automatically initialized and populated by dbcreation-script.yaml which is mounted as a ConfigMap
 - **Namespace**: `zhf`
 - **Storage**: Local PVC
 
