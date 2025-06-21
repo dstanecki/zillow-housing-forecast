@@ -8,24 +8,37 @@ A containerized Python Flask web application that predicts the estimated one-yea
 
 This project uses historical Zillow data to forecast housing market trends. The app is built with Python and Flask, backed by a MariaDB database, and can be deployed in various environments using Docker Compose, Kubernetes, or AWS ECS Fargate.
 
-## How to run locally
+## 🧱 Architecture
 
-Prerequisites to build Docker container: Python, Flask
+- **Frontend**: Multi-arch Python Flask app
+- **Backend**: MariaDB with PersistentVolume
+- **Namespace**: `zhf`
+- **Storage**: Local PVC
 
-### Instructions
-1. Build the Dockerfile and name it
-2. Modify docker-compose.yaml if you're starting with the official mariadb container
-3. From a Git Bash command line:
-* docker compose --build
-* docker compose up -d
+## 📋 Prerequisites
 
-## Architecture
+- Kubernetes 1.24+
+- kubectl configured
+- (Optional) K3s / Minikube / Kind / GKE / EKS
+- (Optional) MetalLB installed (if using `LoadBalancer` in local cluster)
 
-### Front end container 
-The front end container is a Python Flask web app named "dstanecki/zhf". I built this using the Dockerfile present in this repo. It uses application.py to run the actual application on port 80. The connection to the database container contains hardcoded credentials and should be passed from AWS Secrets Manager or similar instead. 
+## 🚀 Kubernetes Deployment Instructions
 
-### Back end container
-The back end container is based on the official mariaDB container. I inserted data via an entrypoint script and committed those changes to my own container, "dstanecki/zhf_db". 
+### Step 1: Clone this repo
+```bash
+git clone https://github.com/dstanecki/zillow-housing-forecast.git
+cd zillow-housing-forecast
+```
+### Step 2: Create the 'zhf' namespace
+```bash
+kubectl apply -f deployments/kubernetes/namespace.yaml
+```
+### Step 3: Deploy all manifests
+```bash
+kubectl apply -f deployments/kubernetes/ -n zhf
+```
+### Step 4: Access the app via NodePort service or LoadBalancer (if configured)
+#### NodePort 
+![Node Port Visual](./images/nodePortVisual.png)
 
-### Links
-Zillow Data: https://www.zillow.com/research/data/
+Based on my example above, the link would be http://192.168.12.199:30836

@@ -2,6 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: dbcreation-script
+  namespace: zhf
 data: 
   import-data.sql: |-
     CREATE DATABASE IF NOT EXISTS ZillowHomeValueForecast;

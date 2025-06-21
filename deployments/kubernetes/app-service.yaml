@@ -8,6 +8,7 @@ metadata:
   labels:
     io.kompose.service: app
   name: app
+  namespace: zhf
 spec:
   ports:
     - name: "5000"
