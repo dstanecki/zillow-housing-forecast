@@ -11,7 +11,7 @@ kubectl apply -f deployments/kubernetes/ -n zhf
 
 ## 🔍 About
 
-This project uses historical Zillow data to forecast housing market trends. The app is built with Python and Flask, backed by a MariaDB database, and can be deployed in various environments using Docker Compose, Kubernetes, or AWS ECS Fargate.
+This project uses historical Zillow data to forecast housing market trends. The data is smoothed and seasonally adjusted, meaning that it's been processed using a moving average to reduce short-term noise and seasonal effects. The app is built with Python and Flask, backed by a MariaDB database, and can be deployed in various environments using Docker Compose, Kubernetes, or AWS ECS Fargate.
 
 ## 🧱 Architecture
 
