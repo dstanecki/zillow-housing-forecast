@@ -9,6 +9,7 @@
 - Investigate Helm
 
 ### Medium
+- Set up Pihole as a container
 - Implement ELK stack
 - Remove hardcoded default credentials and replace with env variables
 - Terraform it and add cloud provisioning option
