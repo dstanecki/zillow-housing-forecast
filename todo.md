@@ -26,6 +26,8 @@
 
 - Investigate ArgoCD
 
+- Think about RBAC and network pols
+
 ## Low
 - Use Helm charts to set up a dev/prod option
 
