@@ -1,12 +1,10 @@
 # TODO
 
 ### High 
-- Fix 2nd pi node
-    - Test failover handling, pod autoscaling, liveness/readiness probes
+- Set up MetalLB for 2-node deployments and segment from single-node NodePort deployments via Helm 
+- Test failover handling, pod autoscaling, liveness/readiness probes
 - Implement Prometheus + Grafana + tracing (OpenTelemetry or similar will allow seeing how long each DB call takes)
 - Create architectural diagram
-- Add LoadBalancer service option with MetalLB or similar
-- Investigate Helm
 
 ### Medium
 - Set up Pihole as a container
