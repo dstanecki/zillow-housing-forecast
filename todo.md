@@ -7,6 +7,7 @@
 - Create architectural diagram
 
 ### Medium
+- Longhorn
 - Set up Pihole as a container
 - Implement ELK stack
 - Remove hardcoded default credentials and replace with env variables
