@@ -7,7 +7,7 @@
 - Create architectural diagram
 
 ### Medium
-- Longhorn
+- Set up an ingress controller (NGINX, Traefik) in order to put Metal load balancer behind zhf.danielstanecki.com 
 - Set up Pihole as a container
 - Implement ELK stack
 - Remove hardcoded default credentials and replace with env variables
@@ -20,6 +20,7 @@
 - Think about RBAC and network pols
 
 ### Low
+- Longhorn (not required for my read-only database but will be good to experiment in the future)
 - Use Helm charts to set up a dev/prod option
 - GitHub Actions Pipeline for building images and deploying to pi nodes
 - Alter docker-compose to use new multi-arch container and the stock mariadb container 
