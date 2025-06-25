@@ -25,27 +25,13 @@ spec:
       labels:
         io.kompose.service: mariadb
     spec:
-      initContainers: 
-        - name: download-csv
-          image: curlimages/curl:latest 
-          command:
-            - sh
-            - -c
-            - |
-              curl -L https://raw.githubusercontent.com/dstanecki/zillow-housing-forecast/refs/heads/main/data/data.csv -o /csv/data.csv
-              cp /config/import-data.sql /csv/import-data.sql
-          volumeMounts:
-            - name: csv-data
-              mountPath: /csv
-            - name: dbcreation-script 
-              mountPath: /config
       containers:
         - env:
             - name: MYSQL_DATABASE
               value: ZillowHomeValueForecast
             - name: MYSQL_ROOT_PASSWORD
               value: password
-          image: mariadb:latest
+          image: dstanecki/zhf-mariadb:latest
           name: mariadb
           ports:
             - containerPort: 3306
@@ -53,15 +39,8 @@ spec:
           volumeMounts:
             - mountPath: /var/lib/mysql
               name: mariadb-data
-            - mountPath: /docker-entrypoint-initdb.d
-              name: csv-data
       restartPolicy: Always
       volumes:
         - name: mariadb-data
           persistentVolumeClaim:
             claimName: mariadb-data
-        - name: dbcreation-script
-          configMap:
-            name: dbcreation-script
-        - name: csv-data
-          emptyDir: {}

@@ -4,8 +4,8 @@ A containerized Python Flask web application that predicts the estimated one-yea
 
 ## ⚡ TL;DR: Quick Start
 ```bash
-kubectl apply -f deployments/kubernetes/namespace.yaml
-kubectl apply -f deployments/kubernetes/ -n zhf
+kubectl apply -f deployments/k8s/namespace.yaml
+kubectl apply -f deployments/k8s/ -n zhf
 ```
 ---
 
@@ -36,11 +36,11 @@ cd zillow-housing-forecast
 ```
 ### Step 2: Create the 'zhf' namespace
 ```bash
-kubectl apply -f deployments/kubernetes/namespace.yaml
+kubectl apply -f deployments/k8s/namespace.yaml
 ```
 ### Step 3: Deploy all manifests
 ```bash
-kubectl apply -f deployments/kubernetes/ -n zhf
+kubectl apply -f deployments/k8s/ -n zhf
 ```
 ### Step 4: Access the app via NodePort service or LoadBalancer (if configured)
 #### NodePort 
