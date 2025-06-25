@@ -10,7 +10,7 @@ metadata:
   name: app
   namespace: zhf
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       io.kompose.service: app
@@ -23,16 +23,6 @@ spec:
       labels:
         io.kompose.service: app
     spec:
-      affinity:
-        podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            - labelSelector:
-                matchExpressions:
-                  - key: io.kompose.service
-                    operator: In
-                    values:
-                      - app
-              topologyKey: kubernetes.io/hostname
       containers:
         - env:
             - name: DB_HOST
