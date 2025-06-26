@@ -12,7 +12,6 @@ Helm Multi-Node Deployment (2 replicas or more):
 ```bash
 helm install zhf ./deployments/helm/zhf-chart-0.1.0.tgz --set replicaCount=2
 ```
----
 
 ## 🔍 About
 
@@ -38,7 +37,8 @@ git clone https://github.com/dstanecki/zillow-housing-forecast.git
 cd zillow-housing-forecast
 ```
 ### Step 2: Install Helm chart
-By default, the application is deployed with a single replica for both app and db pods. You can increase this using `--set replicaCount=N` for horizontal scaling. 
+- By default, the application is deployed with a single replica for both app and db deployments. You can increase this using `--set replicaCount=N` for horizontal scaling 
+- If replicaCount > 1, then a soft anti-affinity rule is applied to distribute the pods evenly across nodes
 ```bash
 helm install zhf ./deployments/helm/zhf-chart-0.1.0.tgz
 ```
@@ -46,7 +46,7 @@ helm install zhf ./deployments/helm/zhf-chart-0.1.0.tgz
 ### Step 3: Access the app via NodePort service
 #### NodePort 
 ```bash
-kubectl get svc
+kubectl get svc # Retrieve the app svc NodePort
 ```
 ![Node Port Visual](./images/nodePortVisual.png)
 
