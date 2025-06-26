@@ -3,6 +3,17 @@
 A containerized Python Flask web application that predicts the estimated one-year percent change in home values for any given ZIP code in the U.S.
 
 ## ⚡ TL;DR: Quick Start
+Helm Single-Node Deployment: 
+```bash
+helm install /home/daniel/zillow-housing-forecast/deployments/helm/zhf-chart-0.1.0.tgz --generate-name
+```
+
+Helm Multi-Node Deployment: 
+```bash
+helm install /home/daniel/zillow-housing-forecast/deployments/helm/zhf-chart-0.1.0.tgz --generate-name --set replicaCount=2 # Or more
+```
+
+Standard Deployment (keeping 2 replicas default for simplicity):
 ```bash
 kubectl apply -f deployments/k8s/namespace.yaml
 kubectl apply -f deployments/k8s/ -n zhf
@@ -16,18 +27,16 @@ This project uses historical Zillow data to forecast housing market trends. The 
 ## 🧱 Architecture
 
 - **Frontend**: Multi-arch Python Flask app (linux/amd64 and linux/arm64 compatibility ensures that the container runs seamlessly on Raspberry Pi OS, GKE, EKS, etc.)
-- **Backend**: MariaDB with PersistentVolume. The database is automatically initialized and populated by dbcreation-script.yaml which is mounted as a ConfigMap
+- **Backend**: MariaDB
 - **Namespace**: `zhf`
-- **Storage**: Local PVC
 
 ## 📋 Prerequisites
 
 - Kubernetes 1.24+
 - kubectl configured
-- (Optional) K3s / Minikube / Kind / GKE / EKS
-- (Optional) MetalLB installed (if using `LoadBalancer` in local cluster)
+- (Optional) Helm for deploying Helm chart
 
-## 🚀 Kubernetes Deployment Instructions
+## 🚀 Standard Kubernetes Deployment Instructions
 
 ### Step 1: Clone this repo
 ```bash

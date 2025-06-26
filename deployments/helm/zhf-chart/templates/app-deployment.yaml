@@ -8,9 +8,8 @@ metadata:
   labels:
     io.kompose.service: app
   name: app
-  namespace: zhf
 spec:
-  replicas: 1
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
       io.kompose.service: app
@@ -23,6 +22,21 @@ spec:
       labels:
         io.kompose.service: app
     spec:
+      {{- if gt (int (default 1 .Values.replicaCount)) 1}}
+      # Spread pods across nodes if running multiple replicas
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: io.kompose.service
+                      operator: In
+                      values:
+                        - app
+                topologyKey: kubernetes.io/hostname
+      {{- end}}
       containers:
         - env:
             - name: DB_HOST
