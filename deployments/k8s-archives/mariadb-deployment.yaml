@@ -10,7 +10,7 @@ metadata:
   name: mariadb
   namespace: zhf
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       io.kompose.service: mariadb
@@ -25,6 +25,18 @@ spec:
       labels:
         io.kompose.service: mariadb
     spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: io.kompose.service
+                      operator: In
+                      values:
+                        - mariadb
+                topologyKey: kubernetes.io/hostname
       containers:
         - env:
             - name: MYSQL_DATABASE
@@ -36,11 +48,11 @@ spec:
           ports:
             - containerPort: 3306
               protocol: TCP
-          volumeMounts:
-            - mountPath: /var/lib/mysql
-              name: mariadb-data
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "512Mi"
+            limits: 
+              cpu: "500m"
+              memory: "1Gi"
       restartPolicy: Always
-      volumes:
-        - name: mariadb-data
-          persistentVolumeClaim:
-            claimName: mariadb-data

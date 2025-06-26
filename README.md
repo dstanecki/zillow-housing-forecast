@@ -5,18 +5,12 @@ A containerized Python Flask web application that predicts the estimated one-yea
 ## ⚡ TL;DR: Quick Start
 Helm Single-Node Deployment: 
 ```bash
-helm install /home/daniel/zillow-housing-forecast/deployments/helm/zhf-chart-0.1.0.tgz --generate-name
+helm install zhf ./deployments/helm/zhf-chart-0.1.0.tgz
 ```
 
-Helm Multi-Node Deployment: 
+Helm Multi-Node Deployment (2 replicas or more): 
 ```bash
-helm install /home/daniel/zillow-housing-forecast/deployments/helm/zhf-chart-0.1.0.tgz --generate-name --set replicaCount=2 # Or more
-```
-
-Standard Deployment (keeping 2 replicas default for simplicity):
-```bash
-kubectl apply -f deployments/k8s/namespace.yaml
-kubectl apply -f deployments/k8s/ -n zhf
+helm install zhf ./deployments/helm/zhf-chart-0.1.0.tgz --set replicaCount=2
 ```
 ---
 
@@ -27,32 +21,38 @@ This project uses historical Zillow data to forecast housing market trends. The 
 ## 🧱 Architecture
 
 - **Frontend**: Multi-arch Python Flask app (linux/amd64 and linux/arm64 compatibility ensures that the container runs seamlessly on Raspberry Pi OS, GKE, EKS, etc.)
-- **Backend**: MariaDB
+- **Backend**: MariaDB (fully stateless, replicated if desired)
 - **Namespace**: `zhf`
 
 ## 📋 Prerequisites
 
-- Kubernetes 1.24+
+- Kubernetes v1.24+
 - kubectl configured
-- (Optional) Helm for deploying Helm chart
+- Helm v3.18.3+
 
-## 🚀 Standard Kubernetes Deployment Instructions
+## 🚀 Helm Deployment Instructions
 
 ### Step 1: Clone this repo
 ```bash
 git clone https://github.com/dstanecki/zillow-housing-forecast.git
 cd zillow-housing-forecast
 ```
-### Step 2: Create the 'zhf' namespace
+### Step 2: Install Helm chart
+By default, the application is deployed with a single replica for both app and db pods. You can increase this using `--set replicaCount=N` for horizontal scaling. 
 ```bash
-kubectl apply -f deployments/k8s/namespace.yaml
+helm install zhf ./deployments/helm/zhf-chart-0.1.0.tgz
 ```
-### Step 3: Deploy all manifests
-```bash
-kubectl apply -f deployments/k8s/ -n zhf
-```
-### Step 4: Access the app via NodePort service or LoadBalancer (if configured)
+
+### Step 3: Access the app via NodePort service
 #### NodePort 
+```bash
+kubectl get svc
+```
 ![Node Port Visual](./images/nodePortVisual.png)
 
 Based on my example above, the link would be http://192.168.12.199:30836
+
+#### Step 4: Uninstall (Optional)
+```bash 
+helm uninstall zhf
+```
