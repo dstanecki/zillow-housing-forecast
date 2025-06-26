@@ -44,7 +44,6 @@ helm install zhf ./deployments/helm/zhf-chart-0.1.0.tgz
 ```
 
 ### Step 3: Access the app via NodePort service
-#### NodePort 
 ```bash
 kubectl get svc # Retrieve the app svc NodePort
 ```
@@ -52,7 +51,7 @@ kubectl get svc # Retrieve the app svc NodePort
 
 Based on my example above, the link would be http://192.168.12.199:30836
 
-#### Step 4: Uninstall (Optional)
+### Step 4: Uninstall (Optional)
 ```bash 
 helm uninstall zhf
 ```
