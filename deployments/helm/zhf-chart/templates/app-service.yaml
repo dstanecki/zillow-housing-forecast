@@ -12,7 +12,7 @@ spec:
   ports:
     - port: 5000
       targetPort: 5000
-      nodePort: 30443
   selector:
     io.kompose.service: app
-  type: NodePort
+#  type: NodePort
+  type: ClusterIP

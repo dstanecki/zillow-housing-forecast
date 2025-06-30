@@ -1,0 +1,21 @@
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-prod
+spec:
+  acme:
+    email: staneckidaniel@gmail.com
+    server: https://acme-v02.api.letsencrypt.org/directory
+    privateKeySecretRef:
+      name: letsencrypt-prod
+    solvers:
+    - dns01:
+        route53:
+          region: us-east-1  
+          hostedZoneID: Z08039296G5QQH9W8C19  
+          accessKeyIDSecretRef:
+            name: route53-credentials-secret
+            key: access-key-id
+          secretAccessKeySecretRef:
+            name: route53-credentials-secret
+            key: secret-access-key
