@@ -7,6 +7,6 @@ spec:
   issuerRef:
     name: {{ if eq .Values.environment "prod" }}letsencrypt-prod{{ else }}letsencrypt-dev{{ end }}
     kind: ClusterIssuer
-  commonName: {{ if eq .Values.environment "prod" }}zhf.danielstanecki.com{{ else }}zhf-dev.danielstanecki.com{{ end }}
+  commonName: {{ include "zhf.hostname" . }}
   dnsNames:
-    - {{ if eq .Values.environment "prod" }}zhf.danielstanecki.com{{ else }}zhf-dev.danielstanecki.com{{ end }}
+    - {{ include "zhf.hostname" . }}

@@ -9,7 +9,7 @@ metadata:
 spec:
   ingressClassName: traefik
   rules:
-    - host: {{ if eq .Values.environment "prod" }}zhf.danielstanecki.com{{ else }}zhf-dev.danielstanecki.com{{ end }}
+    - host: {{ include "zhf.hostname" . }}
       http:
         paths:
           - path: /
@@ -22,4 +22,4 @@ spec:
   tls:
     - secretName: {{ if eq .Values.environment "prod" }}zhf-prod-tls{{ else }}zhf-dev-tls{{ end }}
       hosts:
-        - {{ if eq .Values.environment "prod" }}zhf.danielstanecki.com{{ else }}zhf-dev.danielstanecki.com{{ end }}
+        - {{ include "zhf.hostname" . }}

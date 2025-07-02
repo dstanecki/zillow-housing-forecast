@@ -1,4 +1,15 @@
 {{/*
+Return the correct hostname based on the environment.
+*/}}
+{{- define "zhf.hostname" -}}
+{{- if eq .Values.environment "prod" -}}
+zhf.danielstanecki.com
+{{- else -}}
+zhf-dev.danielstanecki.com
+{{- end -}}
+{{- end -}}
+
+{{/*
 Expand the name of the chart.
 */}}
 {{- define "zhf-chart.name" -}}
