@@ -1,33 +1,39 @@
 # TODO
 
 ### High 
-- Set up MetalLB for 2-node deployments and segment from single-node NodePort deployments via Helm 
-- Test failover handling, pod autoscaling, liveness/readiness probes
+- App starts 20s before database finishes initialization; need readiness probe or something
+- Create Staging environment 
+    - Leave ClusterIssuer OUT of Helm package and also for the dev use the different STAGING lets encrypt link
+    - I need to variablize namespace (think about how to do it. If .Values.dev then namespace=zhf-dev? Otherwise zhf-prod?) for all template files 
+    - I need to variabilize container latest tag (dev will use latest) 
+    - I need to add zhf-dev.danielstanecki.com to Cloudflare and adjust R53 record and Ingress (the names v important here) 
+    - Use Helper function to eliminate clutter   
+        {{- define "zhf.domain" -}}
+        {{- if eq .Values.environment "prod" }}zhf.danielstanecki.com{{ else }}zhf-dev.danielstanecki.com{{ end }}
+        {{- end }}
+
 - Implement Prometheus + Grafana + tracing (OpenTelemetry or similar will allow seeing how long each DB call takes)
-- Create architectural diagram
+    - Monitor SD card health to have warning signs before failure
+- Terraform it and add cloud provisioning option
+    - Set up failover to EKS using Route 53 health checks and test it by turning off raspberry pis
 
 ### Medium
-- Set up an ingress controller (NGINX, Traefik) in order to put Metal load balancer behind zhf.danielstanecki.com 
-- Set up Pihole as a container
+- Create overarching architectural diagram once you have full EKS failover
 - Implement ELK stack
 - Remove hardcoded default credentials and replace with env variables
-- Terraform it and add cloud provisioning option
 - How to address the revolving CSV data each month?
     - Zillow's download link changes frequently
-    - Might have to modify my initContainer to be able to use python to scrape the link
-    - Another alternative is automation pipeline to pull it to github repo
+    - CI/CD pipeline that pulls the latest data and programmatically alters SQL initialization script, then builds a new container, then k8s nodes pull container
 - Investigate ArgoCD
 - Think about RBAC and network pols
 
 ### Low
+- Script to control RPi GPIO-4 fans
 - Longhorn (not required for my read-only database but will be good to experiment in the future)
-- Use Helm charts to set up a dev/prod option
-- GitHub Actions Pipeline for building images and deploying to pi nodes
-- Alter docker-compose to use new multi-arch container and the stock mariadb container 
-    - Same for ECS docs
-    - I'm realizing that I'll have to reupload the import-data.sql file for docker-compose/ECS
+- Alter docker-compose + ECS to use new containers
 - Improve front end 
     - Support endless table results
     - Include screenshots in the readme
 - Kustomize to handle namespace better
 - Contribute to Kompose to fix the bug you found with volume mount
+- Is Pihole worth it?
