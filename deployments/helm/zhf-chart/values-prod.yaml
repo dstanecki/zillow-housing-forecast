@@ -1,17 +1,28 @@
-# Default values for zhf-chart.
+# PROD values for zhf-chart.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
 # This will set the replicaset count more information can be found here: https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/
-replicaCount: 1
+replicaCount: 2
+
+# Monitoring
+monitoring:
+  enabled: true
+  prometheusRelease: prometheus
+
+# Specify dev or prod
+environment: "prod"
 
 # This sets the container image more information can be found here: https://kubernetes.io/docs/concepts/containers/images/
-image:
-  repository: nginx
-  # This sets the pull policy for images.
+appImage:
+  repository: dstanecki/zhf
   pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+  tag: "v1.0.0"
+
+dbImage:
+  repository: dstanecki/zhf-mariadb
+  pullPolicy: IfNotPresent
+  tag: "v1.0.0"
 
 # This is for the secrets for pulling an image from a private repository more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
 imagePullSecrets: []

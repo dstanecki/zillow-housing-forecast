@@ -7,12 +7,14 @@ metadata:
     kompose.version: 1.34.0 (cbf2835db)
   labels:
     io.kompose.service: app
-  name: app
+    environment: {{ .Values.environment }}
+  name: {{ if eq .Values.environment "prod" }}app-prod{{ else }}app-dev{{ end }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
       io.kompose.service: app
+      environment: {{ .Values.environment }}
   template:
     metadata:
       annotations:
@@ -21,9 +23,10 @@ spec:
         kompose.version: 1.34.0 (cbf2835db)
       labels:
         io.kompose.service: app
+        environment: {{ .Values.environment }}
     spec:
-      {{- if gt (int (default 1 .Values.replicaCount)) 1}}
       # Spread pods across nodes if running multiple replicas
+      {{- if gt (int (default 1 .Values.replicaCount)) 1}}
       affinity:
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
@@ -40,14 +43,14 @@ spec:
       containers:
         - env:
             - name: DB_HOST
-              value: mariadb
+              value: {{ if eq .Values.environment "prod" }}mariadb-prod{{ else }}mariadb-dev{{ end }}
             - name: DB_NAME
               value: ZillowHomeValueForecast
             - name: DB_PASSWORD
               value: password
             - name: DB_USER
-              value: user
-          image: dstanecki/zhf_multi_arch:latest
+              value: root
+          image: "{{ .Values.appImage.repository }}:{{ .Values.appImage.tag }}"
           name: app
           ports:
             - containerPort: 5000

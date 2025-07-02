@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, flash
 import mysql.connector
 import mariadb
+import os
 
 application = Flask(__name__)
 
@@ -14,13 +15,13 @@ def process():
     cur = None
     try:
         zip_code = request.form['zip']
-        # Establish the database connection
+        # Establish the database connection using env vars defined in app-deployment.yaml with fallback defaults
         conn = mariadb.connect(
-            host='mariadb',
+            host=os.getenv("DB_HOST", "mariadb"),
             port=3306,
-            user='root',
-            password='password',
-            database='ZillowHomeValueForecast'
+            user=os.getenv("DB_USER", "root"),
+            password=os.getenv("DB_PASSWORD", ""),
+            database=os.getenv("DB_NAME", "ZillowHomeValueForecast")
         )
         cur = conn.cursor()
         # Execute the query

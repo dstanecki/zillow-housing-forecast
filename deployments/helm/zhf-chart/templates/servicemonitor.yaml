@@ -1,0 +1,19 @@
+{{- if .Values.monitoring.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: app-monitor
+  labels:
+    release: {{ .Values.monitoring.prometheusRelease | default "prometheus" }}
+spec:
+  selector:
+    matchLabels:
+      io.kompose.service: app 
+  namespaceSelector:
+    matchNames:
+      - {{ .Release.Namespace }}
+  endpoints:
+    - port: 5000
+      path: /metrics
+      interval: 15s
+{{- end }}

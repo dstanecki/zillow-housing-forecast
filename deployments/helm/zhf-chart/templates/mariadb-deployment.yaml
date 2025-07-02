@@ -7,7 +7,7 @@ metadata:
     kompose.volume.type: persistentVolumeClaim
   labels:
     io.kompose.service: mariadb
-  name: mariadb
+  name: {{ if eq .Values.environment "prod" }}mariadb-prod{{ else }}mariadb-dev{{ end }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
@@ -24,8 +24,8 @@ spec:
       labels:
         io.kompose.service: mariadb
     spec:
-      {{- if gt (int (default 1 .Values.replicaCount)) 1}}
       # Spread pods across nodes if running multiple replicas
+      {{- if gt (int (default 1 .Values.replicaCount)) 1}}
       affinity:
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
@@ -45,7 +45,7 @@ spec:
               value: ZillowHomeValueForecast
             - name: MYSQL_ROOT_PASSWORD
               value: password
-          image: dstanecki/zhf-mariadb:latest
+          image: "{{ .Values.dbImage.repository }}:{{ .Values.dbImage.tag }}"
           name: mariadb
           ports:
             - containerPort: 3306

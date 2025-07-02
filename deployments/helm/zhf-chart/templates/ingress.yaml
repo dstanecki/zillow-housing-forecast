@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ if eq .Values.environment "prod" }}zhf-prod-tls-ingress{{ else }}zhf-dev-tls-ingress{{ end }}
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    # You would use below annotation with a Traefik Middleware object if you couldn't enforce HTTPS redirection from DNS level (like I am with CloudFlare)
+    #    traefik.ingress.kubernetes.io/router.middlewares: middleware
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: {{ if eq .Values.environment "prod" }}zhf.danielstanecki.com{{ else }}zhf-dev.danielstanecki.com{{ end }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ if eq .Values.environment "prod" }}app-prod{{ else }}app-dev{{ end }}
+                port:
+                  number: 5000
+  tls:
+    - secretName: {{ if eq .Values.environment "prod" }}zhf-prod-tls{{ else }}zhf-dev-tls{{ end }}
+      hosts:
+        - {{ if eq .Values.environment "prod" }}zhf.danielstanecki.com{{ else }}zhf-dev.danielstanecki.com{{ end }}
