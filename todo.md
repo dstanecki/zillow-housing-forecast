@@ -1,16 +1,18 @@
 # TODO
 
 ### High 
-- Test failover handling, pod autoscaling, liveness/readiness probes
+- App starts 20s before database finishes initialization; need readiness probe or something
+- Create Staging environment 
+    - Leave ClusterIssuer OUT of Helm package and also for the dev use the different STAGING lets encrypt link
+    - I need to variablize namespace (think about how to do it. If .Values.dev then namespace=zhf-dev? Otherwise zhf-prod?) for all template files 
+    - I need to variabilize container latest tag (dev will use latest) 
+    - I need to add zhf-dev.danielstanecki.com to Cloudflare and adjust R53 record and Ingress (the names v important here) 
 - Implement Prometheus + Grafana + tracing (OpenTelemetry or similar will allow seeing how long each DB call takes)
-- Create overarching architectural diagram
 - Terraform it and add cloud provisioning option
     - Set up failover to EKS using Route 53 health checks and test it by turning off raspberry pis
 
 ### Medium
-- Use Helm charts to create a distinct dev and prod? (this probably comes after I establish my monitoring solutions)
-    - Each in different namespace, pod/svc/deployments differently named, use different container tags
-    - Keep dev internal
+- Create overarching architectural diagram once you have full EKS failover
 - Implement ELK stack
 - Remove hardcoded default credentials and replace with env variables
 - How to address the revolving CSV data each month?
