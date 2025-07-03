@@ -4,7 +4,8 @@ import mariadb
 import os
 from prometheus_flask_exporter import PrometheusMetrics
 
-application = Flask(__name__)
+app = Flask(__name__)
+
 # Expose /metrics
 metrics = PrometheusMetrics(application)
 print("Prometheus metrics initialized")
@@ -12,11 +13,11 @@ print("Prometheus metrics initialized")
 # static information as metric
 metrics.info('app_info', 'Application info', version='1.0.3')
 
-@application.route('/')
+@app.route('/')
 def index():
     return render_template('index.html')
 
-@application.route('/process', methods=['GET', 'POST'])
+@app.route('/process', methods=['GET', 'POST'])
 def process():
     conn = None
     cur = None
@@ -55,11 +56,7 @@ metrics.register_default(
     )
 )
 
-@application.route('/routes')
-def routes():
-    return '\n'.join([str(rule) for rule in application.url_map.iter_rules()])
-
 # Run the app
 if __name__ == "__main__":
-    application.debug = False
-    application.run(host="0.0.0.0", port=5000)
+    app.debug = False
+    app.run(host="0.0.0.0", port=5000)
