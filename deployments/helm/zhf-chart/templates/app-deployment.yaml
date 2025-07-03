@@ -1,10 +1,6 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  annotations:
-    kompose.cmd: kompose convert
-    kompose.service.type: nodeport
-    kompose.version: 1.34.0 (cbf2835db)
   labels:
     io.kompose.service: app
     environment: {{ .Values.environment }}
@@ -17,10 +13,6 @@ spec:
       environment: {{ .Values.environment }}
   template:
     metadata:
-      annotations:
-        kompose.cmd: kompose convert
-        kompose.service.type: nodeport
-        kompose.version: 1.34.0 (cbf2835db)
       labels:
         io.kompose.service: app
         environment: {{ .Values.environment }}
@@ -55,4 +47,5 @@ spec:
           ports:
             - containerPort: 5000
               protocol: TCP
+              name: webapp
       restartPolicy: Always
