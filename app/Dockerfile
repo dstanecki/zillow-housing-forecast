@@ -15,6 +15,9 @@ RUN apt-get update && apt-get install -y \
 # Upgrade pip
 RUN pip install --upgrade pip
 
+# Install Prometheus exporter 
+RUN pip install prometheus_flask_exporter
+
 # Copy the requirements file into the container
 COPY requirements.txt .
 

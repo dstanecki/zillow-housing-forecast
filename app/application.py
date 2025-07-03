@@ -2,8 +2,15 @@ from flask import Flask, render_template, request, flash
 import mysql.connector
 import mariadb
 import os
+from prometheus_flask_exporter import PrometheusMetrics
 
 application = Flask(__name__)
+# Expose /metrics
+metrics = PrometheusMetrics(application)
+print("Prometheus metrics initialized")
+
+# static information as metric
+metrics.info('app_info', 'Application info', version='1.0.3')
 
 @application.route('/')
 def index():
@@ -41,7 +48,18 @@ def process():
         if conn is not None:
             conn.close()
 
+metrics.register_default(
+    metrics.counter(
+        'by_path_counter', 'Request count by request paths',
+        labels={'path': lambda: request.path}
+    )
+)
+
+@application.route('/routes')
+def routes():
+    return '\n'.join([str(rule) for rule in application.url_map.iter_rules()])
+
 # Run the app
 if __name__ == "__main__":
-    application.debug = True
+    application.debug = False
     application.run(host="0.0.0.0", port=5000)
