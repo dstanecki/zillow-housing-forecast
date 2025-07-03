@@ -7,7 +7,7 @@ from prometheus_flask_exporter import PrometheusMetrics
 app = Flask(__name__)
 
 # Expose /metrics
-metrics = PrometheusMetrics(application)
+metrics = PrometheusMetrics(app)
 print("Prometheus metrics initialized")
 
 # static information as metric
