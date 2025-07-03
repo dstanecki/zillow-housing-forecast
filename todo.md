@@ -7,6 +7,7 @@
     - Secure dashboards (Prom + Grafana security concerns)
 - Terraform it and add cloud provisioning option
     - Set up failover to EKS using Route 53 health checks and test it by turning off raspberry pis
+- Traefik dashboard? 
 
 ### Medium
 - Create overarching architectural diagram once you have full EKS failover
