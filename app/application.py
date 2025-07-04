@@ -3,6 +3,7 @@ import mysql.connector
 import mariadb
 import os
 from prometheus_flask_exporter import PrometheusMetrics
+from prometheus_client import Counter
 
 app = Flask(__name__)
 
@@ -12,6 +13,9 @@ print("Prometheus metrics initialized")
 
 # static information as metric
 metrics.info('app_info', 'Application info', version='1.0.3')
+
+# Custom Prometheus counter
+forecast_requests_total = Counter('forecast_request_total', 'Total number of forecast ZIP code queries')
 
 @app.route('/')
 def index():
@@ -38,6 +42,8 @@ def process():
         if not rows:
             error = "No data found for the provided ZIP code."
             return render_template("index.html", error=error)
+        # Increment metric on success
+        forecast_requests_total.inc()
         return render_template("index.html", rows=rows)
     except mariadb.Error as e:
         # Handle database errors
