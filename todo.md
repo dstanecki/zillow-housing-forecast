@@ -3,6 +3,7 @@
 ### High 
 - App starts 20s before database finishes initialization; need readiness probe or something
 - Implement Prometheus + Grafana + tracing (OpenTelemetry or similar will allow seeing how long each DB call takes)
+    - Configure Traefik for metric scraping
     - Monitor SD card health to have warning signs before failure
     - Secure dashboards (Prom + Grafana security concerns)
 - Terraform it and add cloud provisioning option
