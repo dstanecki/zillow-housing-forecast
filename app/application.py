@@ -23,6 +23,9 @@ def index():
 
 @app.route('/process', methods=['GET', 'POST'])
 def process():
+    # Increment metric
+    forecast_requests_total.inc()
+
     conn = None
     cur = None
     try:
@@ -42,8 +45,6 @@ def process():
         if not rows:
             error = "No data found for the provided ZIP code."
             return render_template("index.html", error=error)
-        # Increment metric on success
-        forecast_requests_total.inc()
         return render_template("index.html", rows=rows)
     except mariadb.Error as e:
         # Handle database errors
