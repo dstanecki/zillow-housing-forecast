@@ -1,6 +1,6 @@
 services:
   app:
-    build: .
+    # build: .
     image: dstanecki/zhf:latest
     ports:
       - "5000:5000"
