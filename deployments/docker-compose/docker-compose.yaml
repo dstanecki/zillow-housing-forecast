@@ -1,23 +1,22 @@
 services:
   app:
-    build: .
+    # build: .
     image: dstanecki/zhf:latest
     ports:
       - "5000:5000"
     labels:
       - kompose.service.type=nodeport
     depends_on:
-      - dstanecki/zhf
+      - mariadb
     environment:
       - DB_HOST=mariadb
-      - DB_USER=user
+      - DB_USER=root
       - DB_PASSWORD=password
       - DB_NAME=ZillowHomeValueForecast
   mariadb:
     image: dstanecki/zhf-mariadb:latest
     environment:
-     #  - MYSQL_ROOT_PASSWORD=password
-      # - MYSQL_DATABASE=ZillowHomeValueForecast
+       - MYSQL_ROOT_PASSWORD=password # Password var is required in both app and db containers
     ports:
       - "3306:3306"
     volumes:
