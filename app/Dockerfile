@@ -18,6 +18,9 @@ RUN pip install --upgrade pip
 # Install Prometheus exporter 
 RUN pip install prometheus_flask_exporter
 
+# Install Azure OpenAI SDK
+RUN pip install openai
+
 # Copy the requirements file into the container
 COPY requirements.txt .
 

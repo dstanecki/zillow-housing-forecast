@@ -42,6 +42,11 @@ spec:
               value: password
             - name: DB_USER
               value: root
+            - name: SUBSCRIPTION_KEY
+              valueFrom:
+                secretKeyRef: 
+                  name: azure-ai-openapi-key
+                  key: SUBSCRIPTION_KEY
           image: "{{ .Values.appImage.repository }}:{{ .Values.appImage.tag }}"
           name: app
           ports:
