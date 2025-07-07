@@ -25,7 +25,6 @@
 - Longhorn (not required for my read-only database but will be good to experiment in the future)
 - Alter docker-compose + ECS to use new containers
 - Improve front end 
-    - Support endless table results
     - Include screenshots in the readme
 - Kustomize to handle namespace better
 - Contribute to Kompose to fix the bug you found with volume mount

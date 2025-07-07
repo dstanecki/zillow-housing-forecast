@@ -17,7 +17,7 @@ environment: "prod"
 appImage:
   repository: dstanecki/zhf
   pullPolicy: IfNotPresent
-  tag: "v1.0.0"
+  tag: "v1.0.1"
 
 dbImage:
   repository: dstanecki/zhf-mariadb

@@ -1,32 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <link rel="stylesheet" href="{{ url_for('static', filename= 'css/style.css') }}">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
   <title>Zillow Home Value Forecast</title>
 </head>
 <body>
-  <h1>Zillow Home Value Forecast</h1>
-  <br></br>
-<div>
-  <form action="/process" method="post" role="form">
-    <label for="zip">Enter your ZIP code:</label><br>
-    <input type="text" id="zip" name="zip">
-    <input type="submit" value="Submit">
-  </form>  
-</div>
-  <br></br>
-  <table border=1 id="forecast" class="center">
-    <thead>
-      <th>ZIP Code</th>
-      <th>One-Year Home Value Forecast</th>
-    </thead>
-    {% for row in rows %}
-      <tr>
-	<td>{{ row[0]}}</td>
-	<td>{{ row[1]}}%</td>
-      </tr>
-	{% endfor %}
-   </table>	
+  <header>
+    <h1>Zillow Home Value Forecast</h1>
+    <p class="subtitle">Get 1-year seasonally adjusted and smoothed forecasts based on ZIP codes.</p>
+  </header>
+
+  <main class="container">
+    <form action="/process" method="post" class="form-section">
+      <label for="zip">Enter your ZIP code:</label>
+      <input type="text" id="zip" name="zip" placeholder="e.g., 90210" required />
+      <div class="button-group">
+        <input type="submit" value="Submit">
+        <a href="/clear" class="clear-btn">Clear Results</a>
+      </div>
+    </form>
+
+    {% if error %}
+      <p class="error">{{ error }}</p>
+    {% endif %}
+
+    {% if rows %}
+      <div class="table-wrapper fade-in-table">
+        <table class="forecast">
+          <thead>
+            <tr>
+              <th>ZIP Code</th>
+              <th>One-Year Forecast</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for row in rows %}
+              <tr>
+                <td>{{ row[0] }}</td>
+                <td>{{ row[1] }}%</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% endif %}
+  </main>
+
+  <footer>
+    <p>&copy; Zillow Home Forecast. Not affiliated with Zillow.</p>
+  </footer>
 </body>
 </html>

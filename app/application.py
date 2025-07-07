@@ -1,11 +1,12 @@
-from flask import Flask, render_template, request, flash
-import mysql.connector
+from flask import Flask, session, render_template, request, flash
 import mariadb
 import os
 from prometheus_flask_exporter import PrometheusMetrics
 from prometheus_client import Counter
 
 app = Flask(__name__)
+
+app.secret_key = os.getenv("SECRET_KEY", "supersecretkey")
 
 # Expose /metrics
 metrics = PrometheusMetrics(app)
@@ -39,16 +40,25 @@ def process():
             database=os.getenv("DB_NAME", "ZillowHomeValueForecast")
         )
         cur = conn.cursor()
-        # Execute the query
         cur.execute("SELECT RegionName, `2026-05-31` FROM forecast WHERE RegionName=%s", (zip_code,))
         rows = cur.fetchall()
+
         if not rows:
             error = "No data found for the provided ZIP code."
-            return render_template("index.html", error=error)
-        return render_template("index.html", rows=rows)
+            return render_template("index.html", rows=session.get('results', []), error=error)
+        
+        # Store results in session
+        if 'results' not in session:
+            session['results'] = []
+
+        # Prepend the new result
+        session['results'] = rows + session['results']
+                
+        return render_template("index.html", rows=session['results'])
+        
     except mariadb.Error as e:
         # Handle database errors
-        return render_template("index.html", error=str(e))
+        return render_template("index.html", rows=session.get('results', []), error=str(e))
     finally:
         # Close the cursor and connection if they were initialized
         if cur is not None:
@@ -62,6 +72,11 @@ metrics.register_default(
         labels={'path': lambda: request.path}
     )
 )
+
+@app.route('/clear', methods=['GET'])
+def clear():
+    session.pop('results', None)
+    return render_template("index.html", rows=[])
 
 # Run the app
 if __name__ == "__main__":
