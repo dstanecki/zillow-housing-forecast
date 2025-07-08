@@ -42,20 +42,22 @@ def process():
             database=os.getenv("DB_NAME", "ZillowHomeValueForecast")
         )
         cur = conn.cursor()
-        cur.execute("SELECT RegionName, `2026-05-31` FROM forecast WHERE RegionName=%s", (zip_code,))
+        cur.execute("SELECT RegionName, `2026-05-31`, StateName, City FROM forecast WHERE RegionName=%s", (zip_code,))
         rows = cur.fetchall()
 
         if not rows:
             error = "No data found for the provided ZIP code."
             return render_template("index.html", rows=session.get('results', []), error=error)
 
-        # Get forecast value
+        # Get values
         forecast = rows[0][1]
+        state = rows[0][2]
+        city = rows[0][3]
 
         # Build GPT prompt
         user_prompt = (
             f"ZIP code {zip_code} is forecasted to change by {forecast}% over the next year. "
-            "In less than 3 sentences, say where that ZIP code is and decisively give 2–3 reasons why this is happening."
+            f"In less than 3 sentences, mention that the zip code is located in {city}, {state} and decisively give 2–3 reasons why this is happening."
         )
 
         # Call Azure OpenAI for explanation
