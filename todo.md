@@ -1,16 +1,15 @@
 # TODO
 
 ### High 
-- Update production container version and enable Flask monitoring (deploy svc monitor)
-- Helmify Traefik ServiceMonitor?
+- Update README, remove deploy steps and add screenshots
+- Enable Flask monitoring (deploy svc monitor)
 - App starts 20s before database finishes initialization; need readiness probe or something
 - Set up node export metrics and pod/container metrics with Prometheus 
-- Implement Prometheus + Grafana + tracing (OpenTelemetry or similar will allow seeing how long each DB call takes)
-    - Configure Traefik for metric scraping
+- Implement Prometheus + Grafana
     - Monitor SD card health to have warning signs before failure
     - Secure dashboards (Prom + Grafana security concerns)
-- Traefik dashboard? 
-- AI descriptions
+- Traefik dashboard?
+- Implement tracing (OpenTel)
 
 ### Medium
 - Terraform it and add cloud provisioning option
@@ -30,7 +29,5 @@
 - Script to control RPi GPIO-4 fans
 - Longhorn (not required for my read-only database but will be good to experiment in the future)
 - Alter ECS to use new containers
-- Improve front end 
-    - Include screenshots in the readme
 - Kustomize to handle namespace better
 - Contribute to Kompose to fix the bug you found with volume mount
