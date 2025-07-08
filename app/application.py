@@ -42,7 +42,7 @@ def process():
             database=os.getenv("DB_NAME", "ZillowHomeValueForecast")
         )
         cur = conn.cursor()
-        cur.execute("SELECT RegionName, `2026-05-31`, StateName, City FROM forecast WHERE RegionName=%s", (zip_code,))
+        cur.execute("SELECT RegionName, `2026-05-31`, StateName, City, Metro, CountyName, BaseDate FROM forecast WHERE RegionName=%s", (zip_code,))
         rows = cur.fetchall()
 
         if not rows:
@@ -53,11 +53,15 @@ def process():
         forecast = rows[0][1]
         state = rows[0][2]
         city = rows[0][3]
+        metro = rows[0][4]
+        county = rows[0][5]
+        baseDate = rows[0][6]
 
         # Build GPT prompt
         user_prompt = (
-            f"ZIP code {zip_code} is forecasted to change by {forecast}% over the next year. "
-            f"In less than 3 sentences, mention that the zip code is located in {city}, {state} and decisively give 2–3 reasons why this is happening."
+	    f"Home values in ZIP code {zip_code} are forecasted to change by {forecast}% from {baseDate} to one year later. "
+	    f"This area includes {city}, {state}, within the {metro} metro and {county}. "
+	    f"In a short paragraph, give a concise explanation (2–3 key reasons) why this change is expected, based on local housing or economic trends specific to this region."
         )
 
         # Call Azure OpenAI for explanation
@@ -66,7 +70,7 @@ def process():
             response = client.chat.completions.create(
                 model="o4-mini",
                 messages=[
-                    {"role": "system", "content": "You are a helpful assistant that confidently explains real estate market trends clearly."},
+                    {"role": "system", "content": "You are a real estate analyst who specializes in regional housing trends. Your answers are short but highly specific to the ZIP code, city, and regional context given. Avoid repeating generic causes like 'interest rates' unless clearly relevant."},
                     {"role": "user", "content": user_prompt}
                 ],
                 max_tokens=150,
