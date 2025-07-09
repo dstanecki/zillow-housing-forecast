@@ -42,6 +42,15 @@ spec:
               value: password
             - name: DB_USER
               value: root
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: my-redis
+                  key: redis-password
+            - name: REDIS_HOST
+              value: my-redis-master.{{ .Release.Namespace }}.svc.cluster.local
+            - name: REDIS_PORT
+              value: "6379"
             - name: RECAPTCHA_SITE_KEY
               value: {{ if eq .Values.environment "prod" }}6LdrvnwrAAAAAAlefAt-1M5QhtBlyYCy0eOXDIZg{{ else }}6LdVv3wrAAAAAF9wVVlEZ0xZSu8C0C5gV236pzFL{{ end }}
             - name: RECAPTCHA_SECRET_KEY

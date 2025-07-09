@@ -5,6 +5,8 @@ import requests
 from prometheus_flask_exporter import PrometheusMetrics
 from prometheus_client import Counter
 from openai import AzureOpenAI
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 
 # Azure OpenAI client
 client = AzureOpenAI(
@@ -25,6 +27,20 @@ forecast_requests_total = Counter('forecast_request_total', 'Total number of for
 RECAPTCHA_SECRET_KEY = os.getenv("RECAPTCHA_SECRET_KEY")
 RECAPTCHA_SITE_KEY = os.getenv("RECAPTCHA_SITE_KEY")
 
+# Redis Cache credentials
+REDIS_PASSWORD = os.getenv("REDIS_PASSWORD")
+REDIS_HOST = os.getenv("REDIS_HOST")
+REDIS_PORT = os.getenv("REDIS_PORT", "6379")
+
+REDIS_URI = f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}"
+
+# Flask rate limiter (per-client, Layer 7)
+limiter = Limiter(
+    key_func=get_remote_address,
+    storage_uri=REDIS_URI,
+    app=app,
+)
+
 def verify_recaptcha(token):
     payload = {
         'secret': RECAPTCHA_SECRET_KEY,
@@ -41,6 +57,7 @@ def index():
     return render_template("index.html", rows=session.get('results', []), recaptcha_site_key=RECAPTCHA_SITE_KEY)
 
 @app.route('/process', methods=['GET', 'POST'])
+@limiter.limit("6 per minute")
 def process():
     forecast_requests_total.inc()
 
@@ -49,7 +66,7 @@ def process():
     try:
         zip_code = request.form['zip']
 
-        # ✅ First-time users must solve reCAPTCHA
+        # First-time users must solve reCAPTCHA
         if not session.get('captcha_passed'):
             token = request.form.get('g-recaptcha-response')
             if not verify_recaptcha(token):
@@ -131,6 +148,10 @@ def clear():
     session.pop('results', None)
     session.pop('captcha_passed', None)
     return render_template("index.html", rows=[], recaptcha_site_key=RECAPTCHA_SITE_KEY)
+
+@app.errorhandler(429)
+def ratelimit_handler(e):
+    return render_template("index.html", rows=session.get('results', []), error="Rate limit exceeded. Please wait a moment and try again."), 429
 
 # Metrics
 metrics.register_default(
