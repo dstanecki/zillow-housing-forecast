@@ -42,6 +42,13 @@ spec:
               value: password
             - name: DB_USER
               value: root
+            - name: RECAPTCHA_SITE_KEY
+              value: {{ if eq .Values.environment "prod" }}6LdrvnwrAAAAAAlefAt-1M5QhtBlyYCy0eOXDIZg{{ else }}6LdVv3wrAAAAAF9wVVlEZ0xZSu8C0C5gV236pzFL{{ end }}
+            - name: RECAPTCHA_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: recaptcha-secret-key
+                  key: RECAPTCHA_SECRET_KEY
             - name: SUBSCRIPTION_KEY
               valueFrom:
                 secretKeyRef: 

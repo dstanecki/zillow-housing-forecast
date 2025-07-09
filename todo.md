@@ -1,6 +1,7 @@
 # TODO
 
 ### High 
+- Set up Redis
 - Update README, remove deploy steps and add screenshots
 - Enable Flask monitoring (deploy svc monitor)
 - App starts 20s before database finishes initialization; need readiness probe or something

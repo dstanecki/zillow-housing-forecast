@@ -68,6 +68,15 @@ input[type="text"] {
   margin-top: 20px;
 }
 
+.form-group {
+  margin-bottom: 20px;
+}
+
+.recaptcha-wrapper {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
 input[type="submit"],
 .clear-btn {
   flex: 1;
@@ -209,6 +218,8 @@ footer {
   }
 
   .form-section {
+    display: flex;
+    flex-direction: column;
     gap: 20px;
   }
 

@@ -14,8 +14,18 @@
 
   <main class="container">
     <form action="/process" method="post" class="form-section">
-      <label for="zip">Enter your ZIP code:</label>
-      <input type="text" id="zip" name="zip" placeholder="e.g., 90210" required />
+      <div class="form-group">
+        <label for="zip">Enter your ZIP code:</label>
+        <input type="text" id="zip" name="zip" placeholder="e.g., 90210" required />
+      </div>
+
+      {% if not session.captcha_passed %}
+        <!-- Google reCAPTCHA widget -->
+        <div class="recaptcha-wrapper">  
+          <div class="g-recaptcha" data-sitekey="{{ recaptcha_site_key }}"></div>
+        </div>
+      {% endif %}
+
       <div class="button-group">
         <input type="submit" value="Submit">
         <a href="/clear" class="clear-btn">Clear Results</a>
@@ -33,7 +43,7 @@
             <tr>
               <th>ZIP Code</th>
               <th>One-Year Forecast</th>
-	      <th>AI-powered Explanation</th>
+              <th>AI-powered Explanation</th>
             </tr>
           </thead>
           <tbody>
@@ -53,5 +63,8 @@
   <footer>
     <p>&copy; Zillow Home Forecast. Not affiliated with Zillow.</p>
   </footer>
+
+  <!-- Google reCAPTCHA script -->
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </body>
 </html>
