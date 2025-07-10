@@ -1,6 +1,7 @@
 # TODO
 
 ### High 
+- Consider GPT-4.1 upgrade (need to test real world latency times first)
 - Monitor Redis with Prometheus
 - Set up Prometheus alerts based on node RAM and set in place a protocol to solve
 - Update README, remove deploy steps and add screenshots

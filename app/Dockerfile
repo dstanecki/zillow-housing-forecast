@@ -27,6 +27,9 @@ RUN pip install requests
 # Install flask-limiter 
 RUN pip install flask-limiter[redis]
 
+# Install redis
+RUN pip install redis
+
 # Copy the requirements file into the container
 COPY requirements.txt .
 

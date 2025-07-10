@@ -2,6 +2,7 @@ from flask import Flask, session, render_template, request
 import mariadb
 import os
 import requests
+import redis
 from prometheus_flask_exporter import PrometheusMetrics
 from prometheus_client import Counter
 from openai import AzureOpenAI
@@ -41,6 +42,9 @@ limiter = Limiter(
     app=app,
 )
 
+# Connect to Redis to cache AI responses
+redis_client = redis.StrictRedis.from_url(REDIS_URI, decode_responses=True)
+
 def verify_recaptcha(token):
     payload = {
         'secret': RECAPTCHA_SECRET_KEY,
@@ -65,6 +69,11 @@ def process():
     cur = None
     try:
         zip_code = request.form['zip']
+        
+        # Enforce session cap
+        if 'results' in session and len(session['results']) >= 10:
+            error = "Result limit reached. Please clear results before submitting more queries."
+            return render_template("index.html", rows=session['results'], error=error, recaptcha_site_key=RECAPTCHA_SITE_KEY)
 
         # First-time users must solve reCAPTCHA
         if not session.get('captcha_passed'):
@@ -109,23 +118,32 @@ def process():
             f"In a short paragraph, give a concise explanation (2–3 key reasons) why this change is expected, based on local housing or economic trends specific to this region."
         )
 
-        # Call Azure OpenAI
-        try:
-            response = client.chat.completions.create(
-                model="o4-mini",
-                messages=[
-                    {
-                        "role": "system",
-                        "content": "You are a real estate analyst who specializes in regional housing trends. Your answers are short but highly specific to the ZIP code, city, and regional context given. Avoid repeating generic causes like 'interest rates' unless clearly relevant."
-                    },
-                    {"role": "user", "content": user_prompt}
-                ],
-                max_tokens=150,
-                temperature=0.7
-            )
-            explanation = response.choices[0].message.content
-        except Exception as e:
-            explanation = f"(AI explanation unavailable: {str(e)})"
+        # Check to see if AI explanation is in Redis Cache already
+        cache_key = f"explanation:{zip_code}"
+        cached_explanation = redis_client.get(cache_key)
+
+        if cached_explanation:
+            explanation = cached_explanation
+        else:
+            # Call Azure OpenAI
+            try:
+                response = client.chat.completions.create(
+                    model="o4-mini",
+                    messages=[
+                        {
+                            "role": "system",
+                            "content": "You are a real estate analyst who specializes in regional housing trends. Your answers are short but highly specific to the ZIP code, city, and regional context given. Avoid repeating generic causes like 'interest rates' unless clearly relevant."
+                        },
+                        {"role": "user", "content": user_prompt}
+                    ],
+                    max_tokens=150,
+                    temperature=0.7
+                )
+                explanation = response.choices[0].message.content
+                # Cache explanation for 30 days
+                redis_client.setex(cache_key, 2592000, explanation)     
+            except Exception as e:
+                explanation = f"(AI explanation unavailable: {str(e)})"
 
         # Store result
         result_rows = [(zip_code, forecast, explanation)]
