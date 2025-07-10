@@ -37,3 +37,13 @@ This application is fully containerized and designed for **scalability and high 
 | ![Architectural Diagram](/images/k8s-ingress-letsencrypt.drawio.png) |
 |:--:| 
 | *Network Architecture of Traefik Reverse Proxy + CloudFlare Tunnel + cert-manager* |
+
+### Kubernetes Secrets
+
+To run this app, several secrets are passed as env variables:
+
+- db-password (password for mariadb user)
+- azure-ai-openapi-key (from Azure AI Foundry portal)
+- my-redis (redis password that's auto-generated with the Redis Helm install)
+- recaptcha-secret-key (created when you add your domain to Google reCAPTCHA)
+- tunnel-token (passed to cloudflared agent deployment)

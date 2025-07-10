@@ -39,7 +39,10 @@ spec:
             - name: DB_NAME
               value: ZillowHomeValueForecast
             - name: DB_PASSWORD
-              value: password
+              valueFrom:
+                secretKeyRef:
+                  name: db-password
+                  key: DB_PASSWORD
             - name: DB_USER
               value: root
             - name: REDIS_PASSWORD
