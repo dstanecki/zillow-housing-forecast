@@ -47,3 +47,19 @@ To run this app, several secrets are passed as env variables:
 - my-redis (redis password that's auto-generated with the Redis Helm install)
 - recaptcha-secret-key (created when you add your domain to Google reCAPTCHA)
 - tunnel-token (passed to cloudflared agent deployment)
+
+### Other Helm Charts Required
+
+NAME            NAMESPACE       REVISION        UPDATED                                 STATUS          CHART                           APP VERSION
+my-redis        prod            2               2025-07-09 20:47:57.861059393 -0500 CDT deployed        redis-21.2.6                    8.0.2
+prometheus      monitoring      3               2025-07-01 21:35:47.860339286 -0500 CDT deployed        kube-prometheus-stack-75.7.0    v0.83.0
+traefik         kube-system     5               2025-07-07 17:57:37.034192194 +0000 UTC deployed        traefik-27.0.201+up27.0.2       v2.11.10
+traefik-crd     kube-system     1               2025-06-28 02:05:26.23472741 +0000 UTC  deployed        traefik-crd-27.0.201+up27.0.2   v2.11.10
+
+### Contributing
+
+Due to the need for an individual AzureAI API Key, a recaptcha secret key, CloudFlare tunnel configuration, and external Helm charts, deploying on your local machine would require lengthy configuration.
+
+## License
+
+This project is licensed under the MIT License – see the [LICENSE](./LICENSE) file for details.
