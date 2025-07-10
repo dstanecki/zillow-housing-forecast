@@ -94,7 +94,7 @@ def process():
         )
         cur = conn.cursor()
         cur.execute(
-            "SELECT RegionName, `2026-05-31`, StateName, City, Metro, CountyName, BaseDate FROM forecast WHERE RegionName=%s",
+            "SELECT RegionName, YearForecast, StateName, City, Metro, CountyName, BaseDate FROM forecast WHERE RegionName=%s",
             (zip_code,)
         )
         rows = cur.fetchall()

@@ -12,9 +12,9 @@ CREATE DATABASE IF NOT EXISTS ZillowHomeValueForecast;
         Metro VARCHAR(50),
         CountyName VARCHAR(50),
         BaseDate DATE,
-        `2025-06-30` DECIMAL(4, 2),
-        `2025-08-31` DECIMAL(4, 2),
-        `2026-05-31` DECIMAL(4, 2)
+        MonthForecast DECIMAL(4, 2),
+        QuarterForecast DECIMAL(4, 2),
+        YearForecast DECIMAL(4, 2)
     );
 
     LOAD DATA LOCAL INFILE '/docker-entrypoint-initdb.d/data.csv'

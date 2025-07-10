@@ -12,7 +12,7 @@ https://zhf.danielstanecki.com
 
 ## 🔍 Overview
 
-This project leverages **Zillow’s housing data** to forecast local market trends at the ZIP code level. The data is **smoothed and seasonally adjusted** to reduce noise and emphasize long-term trends.
+This project leverages [Zillow’s housing data](https://www.zillow.com/research/data/) to forecast local market trends at the ZIP code level. The data is **smoothed and seasonally adjusted** to reduce noise and emphasize long-term trends.
 
 Beyond traditional forecasting, the app integrates **AI with live web search grounding** to explain the factors influencing each prediction.
 
