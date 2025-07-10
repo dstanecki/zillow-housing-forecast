@@ -1,9 +1,10 @@
 # TODO
 
 ### High 
+- Traefik still routes to dead nodes, need to add readinessProbes to app pod to mitigate
+    - App starts 20s before database finishes initialization; need readiness probe on DB
 - Update README, remove deploy steps and add screenshots
 - Enable Flask monitoring (deploy svc monitor)
-- App starts 20s before database finishes initialization; need readiness probe or something
 - Set up node export metrics and pod/container metrics with Prometheus 
 - Implement Prometheus + Grafana
     - Monitor SD card health to have warning signs before failure
