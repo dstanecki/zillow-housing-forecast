@@ -26,12 +26,12 @@ This application is fully containerized and designed for **scalability and high 
 
 - **Frontend**: Python Flask web app (multi-arch Docker container)
 - **Backend**: MariaDB (stateless, horizontally scalable with optional replication)
+- **Highly Available Deployment**: Kubernetes + Helm
 - **AI Integration**: Azure OpenAI + Bing Web Search (real-time grounding for explanatory summaries)
 - **Caching & L7 Rate Limiting**: Redis
 - **Reverse Proxy**: Traefik (via Cloudflare Tunnel)
 - **TLS Management**: cert-manager + Let’s Encrypt
 - **Observability**: Prometheus + Grafana
-- **Orchestration**: Kubernetes + Helm
 
 
 | ![Architectural Diagram](/images/k8s-ingress-letsencrypt.drawio.png) |
