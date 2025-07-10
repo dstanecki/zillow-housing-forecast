@@ -50,12 +50,12 @@ To run this app, several secrets are passed as env variables:
 
 ### Other Helm Charts Required
 
-| NAME         | NAMESPACE   | REVISION | UPDATED                                      | STATUS   | CHART                           | APP VERSION |
-|--------------|-------------|----------|----------------------------------------------|----------|----------------------------------|-------------|
-| my-redis     | prod        | 2        | 2025-07-09 20:47:57.861059393 -0500 CDT      | deployed | redis-21.2.6                     | 8.0.2       |
-| prometheus   | monitoring  | 3        | 2025-07-01 21:35:47.860339286 -0500 CDT      | deployed | kube-prometheus-stack-75.7.0     | v0.83.0     |
-| traefik      | kube-system | 5        | 2025-07-07 17:57:37.034192194 +0000 UTC      | deployed | traefik-27.0.201+up27.0.2        | v2.11.10    |
-| traefik-crd  | kube-system | 1        | 2025-06-28 02:05:26.23472741 +0000 UTC       | deployed | traefik-crd-27.0.201+up27.0.2    | v2.11.10    |
+| NAME         | NAMESPACE   | CHART                           | APP VERSION |
+|--------------|-------------|----------------------------------|-------------|
+| my-redis     | prod        | redis-21.2.6                     | 8.0.2       |
+| prometheus   | monitoring  | kube-prometheus-stack-75.7.0     | v0.83.0     |
+| traefik      | kube-system | traefik-27.0.201+up27.0.2        | v2.11.10    |
+| traefik-crd  | kube-system | traefik-crd-27.0.201+up27.0.2    | v2.11.10    |
 
 ## Contributing
 
