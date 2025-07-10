@@ -1,9 +1,10 @@
 # TODO
 
 ### High 
-- Set up Redis
+- Monitor Redis with Prometheus
+- Set up Prometheus alerts based on node RAM and set in place a protocol to solve
 - Update README, remove deploy steps and add screenshots
-- Enable Flask monitoring (deploy svc monitor)
+- Enable Flask monitoring (deploy svc monitor in prod)
 - App starts 20s before database finishes initialization; need readiness probe or something
 - Set up node export metrics and pod/container metrics with Prometheus 
 - Implement Prometheus + Grafana
