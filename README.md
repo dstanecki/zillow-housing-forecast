@@ -6,7 +6,7 @@ An AI-powered, containerized Python Flask web application that predicts the esti
 https://zhf.danielstanecki.com
 
 
-| ![Front End](/images/frontend.png){: width="550" } |
+| ![Front End](/images/frontend.png) |
 |:--:| 
 | *Front end* |
 
@@ -34,6 +34,6 @@ This application is fully containerized and designed for **scalability and high 
 - **Orchestration**: Kubernetes + Helm
 
 
-| ![Architectural Diagram](/images/k8s-ingress-letsencrypt.drawio.png){: width="550" } |
+| ![Architectural Diagram](/images/k8s-ingress-letsencrypt.drawio.png) |
 |:--:| 
 | *Network Architecture of Traefik Reverse Proxy + CloudFlare Tunnel + cert-manager* |
