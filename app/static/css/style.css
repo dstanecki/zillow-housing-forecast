@@ -68,6 +68,14 @@ input[type="text"] {
   margin-top: 20px;
 }
 
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.recaptcha-wrapper {
+  margin-top: 0.5rem;
+}
+
 input[type="submit"],
 .clear-btn {
   flex: 1;

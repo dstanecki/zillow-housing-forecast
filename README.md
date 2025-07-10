@@ -1,6 +1,9 @@
 # 🏡 Zillow Housing Forecast
 
-A containerized Python Flask web application that predicts the estimated one-year percent change in home values for any given ZIP code in the U.S.
+An AI-powered, containerized Python Flask web application that predicts the estimated one-year percent change in home values for any given ZIP code in the U.S.
+
+## Live Demo Link
+https://zhf.danielstanecki.com
 
 ## ⚡ TL;DR: Quick Start
 Helm Single-Node Deployment: 

@@ -3,3 +3,4 @@ Werkzeug>=2.0.0
 mariadb==1.0.1
 mysql-connector-python
 prometheus-flask-exporter
+redis

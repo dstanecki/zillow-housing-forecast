@@ -1,10 +1,14 @@
 # TODO
 
 ### High 
+- Consider GPT-4.1 upgrade (need to test real world latency times first)
+- Monitor Redis with Prometheus
+- Set up Prometheus alerts based on node RAM and set in place a protocol to solve
 - Traefik still routes to dead nodes, need to add readinessProbes to app pod to mitigate
     - App starts 20s before database finishes initialization; need readiness probe on DB
 - Update README, remove deploy steps and add screenshots
-- Enable Flask monitoring (deploy svc monitor)
+- Enable Flask monitoring (deploy svc monitor in prod)
+- App starts 20s before database finishes initialization; need readiness probe or something
 - Set up node export metrics and pod/container metrics with Prometheus 
 - Implement Prometheus + Grafana
     - Monitor SD card health to have warning signs before failure
