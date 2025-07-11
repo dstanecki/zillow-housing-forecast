@@ -32,6 +32,7 @@ This application is fully containerized and designed for **scalability and high 
 - **Reverse Proxy**: Traefik (via Cloudflare Tunnel)
 - **TLS Management**: cert-manager + Let’s Encrypt
 - **Observability**: Prometheus + Grafana
+- **CI/CD**: GitHub Actions pulls new Zillow dataset on the 17th of every month and rebuilds my db container image
 
 
 | ![Architectural Diagram](/images/k8s-ingress-letsencrypt.drawio.png) |
