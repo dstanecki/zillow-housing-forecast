@@ -2,8 +2,8 @@
 
 ### High 
 - Address revolving CSV data (currently Actions pipeline curls csv and builds zhf-mariadb:latest once per month, but I would like to also automate k8s rollout)
+    - Add a zhf-mariadb:v1.x.x build stage for prod
     - ArgoCD to handle automated rollout for dev, and manual approval for prod
-- Consider GPT-4.1 upgrade (need to test real world latency times first)
 - Monitor Redis with Prometheus
 - Set up Prometheus alerts based on node RAM and set in place a protocol to solve
 - Traefik still routes to dead nodes, need to add readinessProbes to app pod to mitigate
