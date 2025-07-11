@@ -1,8 +1,7 @@
 # TODO
 
 ### High 
-- Address revolving CSV data
-    - CI/CD to curl file, build new container 
+- Address revolving CSV data (currently Actions pipeline curls csv and builds zhf-mariadb:latest once per month, but I would like to also automate k8s rollout)
     - ArgoCD to handle automated rollout for dev, and manual approval for prod
 - Consider GPT-4.1 upgrade (need to test real world latency times first)
 - Monitor Redis with Prometheus
