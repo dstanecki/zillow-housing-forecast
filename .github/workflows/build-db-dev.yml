@@ -1,9 +1,10 @@
 name: Build and Push zhf-mariadb:latest # Latest tag used exclusively for dev deployments
 
 on:
-  workflow_run: ["Monthly Data Update"]
-  types:
-    - completed
+  workflow_run: 
+    workflows: ["Monthly Data Update"]
+    types:
+      - completed
   workflow_dispatch: 
 
 jobs:
