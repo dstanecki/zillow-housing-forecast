@@ -1,0 +1,27 @@
+name: Monthly Data Update
+
+on:
+  schedule:
+    - cron: '0 0 17 * *'  # At 00:00 UTC on the 17th of every month
+
+jobs:
+  update-data:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Download data.csv
+        run: curl -L "https://files.zillowstatic.com/research/public_csvs/zhvf_growth/Zip_zhvf_growth_uc_sfrcondo_tier_0.33_0.67_sm_sa_month.csv?t=1752181428/data.csv" -o db/data.csv
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add db/data.csv
+          git commit -m "Update data.csv (automated)" || echo "No changes to commit"
+          git push
+        env:
+          # GitHub token is needed to push changes
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
