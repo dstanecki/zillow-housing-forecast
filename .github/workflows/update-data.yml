@@ -3,6 +3,7 @@ name: Monthly Data Update
 on:
   schedule:
     - cron: '0 0 17 * *'  # At 00:00 UTC on the 17th of every month
+  workflow_dispatch:      # Enable manual test runs
 
 jobs:
   update-data:
