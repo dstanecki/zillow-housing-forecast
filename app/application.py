@@ -167,6 +167,10 @@ def clear():
     session.pop('captcha_passed', None)
     return render_template("index.html", rows=[], recaptcha_site_key=RECAPTCHA_SITE_KEY)
 
+@app.route('/ready')
+def readiness_probe():
+    return 'OK', 200
+
 @app.errorhandler(429)
 def ratelimit_handler(e):
     return render_template("index.html", rows=session.get('results', []), error="Rate limit exceeded. Please wait a moment and try again."), 429

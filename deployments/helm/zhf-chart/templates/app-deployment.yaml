@@ -21,17 +21,38 @@ spec:
       {{- if gt (int (default 1 .Values.replicaCount)) 1}}
       affinity:
         podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            - labelSelector:
-                matchExpressions:
-                  - key: io.kompose.service
-                    operator: In
-                    values:
-                      - app
-              topologyKey: kubernetes.io/hostname
-      {{- end}}
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: io.kompose.service
+                      operator: In
+                      values:
+                        - app
+                topologyKey: kubernetes.io/hostname      {{- end}}
       containers:
-        - env:
+        - name: app
+          image: "{{ .Values.appImage.repository }}:{{ .Values.appImage.tag }}"
+          ports:
+            - containerPort: 5000
+              protocol: TCP
+              name: webapp
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 5000
+            initialDelaySeconds: 3
+            periodSeconds: 5
+            failureThreshold: 3
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+          env:
             - name: DB_HOST
               value: {{ if eq .Values.environment "prod" }}mariadb-prod{{ else }}mariadb-dev{{ end }}
             - name: DB_NAME
@@ -64,18 +85,5 @@ spec:
                 secretKeyRef: 
                   name: azure-ai-openapi-key
                   key: SUBSCRIPTION_KEY
-          image: "{{ .Values.appImage.repository }}:{{ .Values.appImage.tag }}"
-          name: app
-          ports:
-            - containerPort: 5000
-              protocol: TCP
-              name: webapp
-          resources:
-            requests:
-              cpu: "100m"
-              memory: "256Mi"
-            limits:
-              cpu: "500m"
-              memory: "512Mi"
       restartPolicy: Always
 
