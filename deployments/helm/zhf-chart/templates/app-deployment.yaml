@@ -21,16 +21,14 @@ spec:
       {{- if gt (int (default 1 .Values.replicaCount)) 1}}
       affinity:
         podAntiAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 100
-              podAffinityTerm:
-                labelSelector:
-                  matchExpressions:
-                    - key: io.kompose.service
-                      operator: In
-                      values:
-                        - app
-                topologyKey: kubernetes.io/hostname
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: io.kompose.service
+                    operator: In
+                    values:
+                      - app
+              topologyKey: kubernetes.io/hostname
       {{- end}}
       containers:
         - env:
@@ -72,4 +70,12 @@ spec:
             - containerPort: 5000
               protocol: TCP
               name: webapp
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
       restartPolicy: Always
+

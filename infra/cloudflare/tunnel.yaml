@@ -13,19 +13,16 @@ spec:
       labels:
         pod: cloudflared
     spec:
-      # Spread pods across nodes
       affinity:
         podAntiAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 100
-              podAffinityTerm:
-                labelSelector:
-                  matchExpressions:
-                    - key: pod
-                      operator: In
-                      values:
-                        - cloudflared
-                topologyKey: kubernetes.io/hostname
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: pod
+                    operator: In
+                    values:
+                      - cloudflared
+              topologyKey: kubernetes.io/hostname
       securityContext:
         sysctls:
           # Allows ICMP traffic (ping, traceroute) to resources behind cloudflared.
