@@ -32,16 +32,20 @@ spec:
                 topologyKey: kubernetes.io/hostname
       {{- end}}
       containers:
-        - env:
-            - name: MYSQL_DATABASE
-              value: ZillowHomeValueForecast
-            - name: MYSQL_ROOT_PASSWORD
-              value: password
-          image: "{{ .Values.dbImage.repository }}:{{ .Values.dbImage.tag }}"
+        - image: "{{ .Values.dbImage.repository }}:{{ .Values.dbImage.tag }}"
           name: mariadb
           ports:
             - containerPort: 3306
               protocol: TCP
+          startupProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - /usr/local/bin/healthcheck.sh
+            initialDelaySeconds: 30
+            periodSeconds: 5
+            failureThreshold: 10
           resources:
             requests:
               cpu: "250m"
@@ -49,4 +53,12 @@ spec:
             limits: 
               cpu: "500m"
               memory: "1Gi"
+          env:
+            - name: MYSQL_DATABASE
+              value: ZillowHomeValueForecast
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-password
+                  key: DB_PASSWORD
       restartPolicy: Always

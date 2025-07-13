@@ -22,7 +22,7 @@ appImage:
 dbImage:
   repository: dstanecki/zhf-mariadb
   pullPolicy: IfNotPresent
-  tag: "v1.0.0"
+  tag: "v1.0.1"
 
 ingress:
   enabled: true
