@@ -7,7 +7,6 @@
 - Monitor Redis with Prometheus
 - Set up Prometheus alerts based on node RAM and set in place a protocol to solve
 - Traefik still routes to dead nodes, need to add readinessProbes to app pod to mitigate
-    - App starts 20s before database finishes initialization; need readiness probe on DB
 - Set up node export metrics and pod/container metrics with Prometheus 
 
 ### Medium
