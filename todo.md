@@ -6,7 +6,6 @@
     - ArgoCD to handle automated rollout for dev, and manual approval for prod
 - Monitor Redis with Prometheus
 - Set up Prometheus alerts based on node RAM and set in place a protocol to solve
-- Traefik still routes to dead nodes, need to add readinessProbes to app pod to mitigate
 - Set up node export metrics and pod/container metrics with Prometheus 
 
 ### Medium
