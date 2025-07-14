@@ -4,7 +4,6 @@
 - Address revolving CSV data (currently Actions pipeline curls csv and builds zhf-mariadb:latest once per month, but I would like to also automate k8s rollout)
     - Add a zhf-mariadb:v1.x.x build stage for prod
     - ArgoCD to handle automated rollout for dev, and manual approval for prod
-- Monitor Redis with Prometheus
 - Set up Prometheus alerts based on node RAM and set in place a protocol to solve
 - Set up node export metrics and pod/container metrics with Prometheus 
 
@@ -20,6 +19,8 @@
 - Create overarching architectural diagram once you have full EKS failover
 - Implement ELK stack
 - Think about RBAC and network pols
+- Implement front end map (color coded zip codes)
+- Make Terraform the primary method for other people to deploy the app (easier than the current bare metal setup)
 
 ### Low
 - Script to control RPi GPIO-4 fans

@@ -57,6 +57,7 @@ To run this app, several secrets are passed as env variables:
 | prometheus   | monitoring  | kube-prometheus-stack-75.7.0     | v0.83.0     |
 | traefik      | kube-system | traefik-27.0.201+up27.0.2        | v2.11.10    |
 | traefik-crd  | kube-system | traefik-crd-27.0.201+up27.0.2    | v2.11.10    |
+| cert-manager | cert-manager| cert-manager                     | v1.18.0     |
 
 ## Contributing
 
