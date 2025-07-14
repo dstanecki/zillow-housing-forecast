@@ -1,7 +1,7 @@
 architecture: standalone
 
 replica:
-  replicaCount: 1
+  replicaCount: 0
 
 master:
   persistence:
@@ -9,11 +9,16 @@ master:
     size: 256Mi
 
 metrics:
-  enabled: true
+  enabled: false
   serviceMonitor:
-    enabled: true
+    enabled: false
     additionalLabels: # Crucial for Prometheus to be able to discover the service monitor
       release: prometheus 
+
+auth:
+  enabled: true
+  existingSecret: redis-password
+
 
 redis:
   extraFlags:

@@ -45,7 +45,7 @@ To run this app, several secrets are passed as env variables:
 
 - db-password (password for mariadb user)
 - azure-ai-openapi-key (from Azure AI Foundry portal)
-- my-redis (redis password that's auto-generated with the Redis Helm install)
+- redis-password (redis password, create this manually instead of using the default generated one. Avoids password regeneration if you ever reinstall redis)
 - recaptcha-secret-key (created when you add your domain to Google reCAPTCHA)
 - tunnel-token (passed to cloudflared agent deployment)
 
