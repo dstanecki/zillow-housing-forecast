@@ -1,0 +1,28 @@
+architecture: standalone
+
+replica:
+  replicaCount: 1
+
+master:
+  persistence:
+    enabled: true
+    size: 256Mi
+
+metrics:
+  enabled: true
+  serviceMonitor:
+    enabled: true
+    namespace: prod         
+    path: /metrics
+    interval: 30s
+    scrapeTimeout: 10s
+    labels:
+      release: prometheus           
+    namespaceSelector:
+      matchNames:
+        - prod 
+
+redis:
+  extraFlags:
+    - --maxmemory 150mb
+    - --maxmemory-policy allkeys-lru
