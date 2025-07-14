@@ -25,6 +25,4 @@
 ### Low
 - Script to control RPi GPIO-4 fans
 - Longhorn (not required for my read-only database but will be good to experiment in the future)
-- Alter ECS to use new containers
-- Kustomize to handle namespace better
 - Contribute to Kompose to fix the bug you found with volume mount
