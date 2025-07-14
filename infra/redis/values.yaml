@@ -12,15 +12,8 @@ metrics:
   enabled: true
   serviceMonitor:
     enabled: true
-    namespace: prod         
-    path: /metrics
-    interval: 30s
-    scrapeTimeout: 10s
-    labels:
-      release: prometheus           
-    namespaceSelector:
-      matchNames:
-        - prod 
+    additionalLabels: # Crucial for Prometheus to be able to discover the service monitor
+      release: prometheus 
 
 redis:
   extraFlags:
