@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: zhf-prod
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/dstanecki/zillow-housing-forecast.git
+    targetRevision: HEAD
+    path: deployments/helm/zhf-chart
+    helm:
+      valueFiles:
+        - values-prod.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: prod
+  syncPolicy: {}  # Manual sync only
