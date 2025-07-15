@@ -1,0 +1,13 @@
+configs:
+  params:
+    server.insecure: "true" # Disable ArgoCD's TLS management because Traefik is handling TLS
+
+server:
+  service:
+    type: ClusterIP
+    ports:
+      http: 80
+
+# Disabling ArgoCD's built-in ingress because I'm using my own Traefik IngressRoute
+  ingress:
+    enabled: false
