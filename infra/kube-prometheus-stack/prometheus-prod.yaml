@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kube-prometheus-prod
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/dstanecki/zillow-housing-forecast.git
+    targetRevision: main
+    path: infra/kube-prometheus-stack
+    helm:
+      valueFiles:
+        - values-prod.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: monitoring
+  syncPolicy: {} # Manual
