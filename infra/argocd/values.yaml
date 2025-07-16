@@ -11,3 +11,6 @@ server:
 # Disabling ArgoCD's built-in ingress because I'm using my own Traefik IngressRoute
   ingress:
     enabled: false
+
+dex:
+  enabled: false
