@@ -16,6 +16,9 @@ This folder (`infra/argocd/`) contains all ArgoCD-related configuration and depl
 
 ---
 
+## Install ArgoCD from Helm 
+helm install argocd argo/argo-cd -n argocd --values values.yaml
+
 ## 🧠 Environments
 
 ### 🔁 Dev (`zhf-dev`)

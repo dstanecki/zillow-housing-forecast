@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: kube-prometheus-stack
+  name: prometheus
   namespace: argocd
 spec:
   project: default
@@ -15,4 +15,6 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: monitoring
-  syncPolicy: {} # Manual
+  syncPolicy: 
+    syncOptions:
+      - ServerSideApply=true

@@ -34,14 +34,16 @@ grafana:
       memory: 200Mi
       cpu: 200m
 
+# DISABLED TO SAVE RAM
 nodeExporter:
-  enabled: true
+  enabled: false
 
 kubeStateMetrics:
   enabled: false
 
 alertmanager:
   alertmanagerSpec:
+    replicas: 1
     resources:
       requests:
         memory: 64Mi
