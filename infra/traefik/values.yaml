@@ -1,0 +1,7 @@
+ports:
+  metrics:
+    port: 9100
+    targetPort: 9100
+    expose: 
+      default: true
+    protocol: TCP
