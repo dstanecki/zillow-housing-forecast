@@ -4,9 +4,11 @@ prometheus:
     nodePort: 30090
 
   prometheusSpec:
-    scrapeInterval: 30s         # Default is 15s
+    nodeSelector:
+      node-role.kubernetes.io/ssd: "true"
+    scrapeInterval: 15s         # Default is 15s
     evaluationInterval: 30s
-    retention: 2d              # Reduce retention from 15d to 2d
+    retention: 5d              # Reduce retention from default 15d
     resources:
       requests:
         memory: 256Mi
@@ -23,6 +25,8 @@ prometheus:
               storage: 2Gi
 
 grafana:
+  nodeSelector:
+    node-role.kubernetes.io/ssd: "true"
   service:
     type: NodePort
     nodePort: 30030
@@ -34,15 +38,16 @@ grafana:
       memory: 200Mi
       cpu: 200m
 
-# DISABLED TO SAVE RAM
 nodeExporter:
-  enabled: false
+  enabled: true
 
 kubeStateMetrics:
-  enabled: false
+  enabled: true
 
 alertmanager:
   alertmanagerSpec:
+    nodeSelector:
+      node-role.kubernetes.io/ssd: "true"
     replicas: 1
     resources:
       requests:
