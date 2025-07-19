@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: traefik
+  namespace: argocd
+spec:
+  project: default
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: kube-system
+  sources:
+    - repoURL: https://traefik.github.io/charts
+      chart: traefik
+      targetRevision: 36.3.0
+      helm: 
+        valueFiles:
+          - $values/infra/traefik/values.yaml
+    - repoURL: https://github.com/dstanecki/zillow-housing-forecast.git
+      targetRevision: HEAD
+      ref: values
+  syncPolicy: {}  # Manual sync only
