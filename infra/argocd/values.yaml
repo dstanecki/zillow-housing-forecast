@@ -1,8 +1,6 @@
 configs:
   params:
     server.insecure: "true" # Disable ArgoCD's TLS management because Traefik is handling TLS
-    controller.status.processors: "5"  # Fewer concurrent processors
-    controller.operation.processors: "2"
 
 server:
   service:
@@ -16,11 +14,11 @@ server:
 
   resources:
     requests:
-      memory: 150Mi
-      cpu: 50m
+      memory: 256Mi
+      cpu: 100m
     limits:
-      memory: 250Mi
-      cpu: 150m
+      memory: 512Mi
+      cpu: 250m
 
 dex:
   enabled: false
@@ -28,11 +26,11 @@ dex:
 repoServer:
   resources:
     requests:
-      memory: 150Mi
-      cpu: 50m
+      memory: 512Mi
+      cpu: 250m
     limits:
-      memory: 250Mi
-      cpu: 100m
+      memory: 1Gi
+      cpu: 500m
 
 applicationController:
   resources:
