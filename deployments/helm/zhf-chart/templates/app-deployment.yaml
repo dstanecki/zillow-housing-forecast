@@ -70,7 +70,7 @@ spec:
                   name: redis-password
                   key: redis-password
             - name: REDIS_HOST
-              value: my-redis-master.{{ .Release.Namespace }}.svc.cluster.local
+              value: redis-{{ .Release.Namespace}}-master.{{ .Release.Namespace }}.svc.cluster.local
             - name: REDIS_PORT
               value: "6379"
             - name: RECAPTCHA_SITE_KEY

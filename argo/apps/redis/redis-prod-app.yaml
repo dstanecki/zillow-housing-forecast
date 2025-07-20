@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: my-redis # PROD
+  name: redis-prod
   namespace: argocd
 spec:
   project: default
