@@ -10,11 +10,14 @@ spec:
           - env: dev
             namespace: dev
             valuesPath: argo/apps/redis/values-dev.yaml
-            autoSync: true
+            syncPolicy:
+              automated:
+                prune: true
+                selfHeal: true
           - env: prod
             namespace: prod
             valuesPath: argo/apps/redis/values-prod.yaml
-            autoSync: false
+            syncPolicy: {}
   template:
     metadata:
       name: redis-{{env}}
@@ -33,12 +36,4 @@ spec:
         - repoURL: https://github.com/dstanecki/zillow-housing-forecast.git
           targetRevision: HEAD
           ref: values
-      syncPolicy: '{{ syncPolicy }}'
-  parameters:
-    - name: syncPolicy
-      value: |
-        {{- if eq .autoSync true }}
-        automated:
-          prune: true
-          selfHeal: true
-        {{- end }}
+      syncPolicy: {{syncPolicy}}
