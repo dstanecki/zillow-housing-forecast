@@ -1,20 +1,20 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: cert-manager
+  name: my-redis # DEV
   namespace: argocd
 spec:
   project: default
   destination:
     server: https://kubernetes.default.svc
-    namespace: cert-manager
+    namespace: dev
   sources:
-    - repoURL: https://charts.jetstack.io
-      chart: cert-manager
-      targetRevision: 1.18.0
+    - repoURL: https://charts.bitnami.com/bitnami
+      chart: redis
+      targetRevision: 21.2.12
       helm:
         valueFiles:
-          - $values/infra/cert-manager/values.yaml
+          - $values/argo/apps/redis/values-dev.yaml
     - repoURL: https://github.com/dstanecki/zillow-housing-forecast.git
       targetRevision: HEAD
       ref: values

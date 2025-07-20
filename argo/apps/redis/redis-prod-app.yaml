@@ -1,20 +1,20 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: my-redis # DEV
+  name: my-redis # PROD
   namespace: argocd
 spec:
   project: default
   destination:
     server: https://kubernetes.default.svc
-    namespace: dev
+    namespace: prod
   sources:
     - repoURL: https://charts.bitnami.com/bitnami
       chart: redis
       targetRevision: 21.2.12
       helm:
         valueFiles:
-          - $values/infra/redis/values-dev.yaml
+          - $values/argo/apps/redis/values-prod.yaml
     - repoURL: https://github.com/dstanecki/zillow-housing-forecast.git
       targetRevision: HEAD
       ref: values

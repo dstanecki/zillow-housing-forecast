@@ -14,7 +14,7 @@ spec:
       targetRevision: 36.3.0
       helm: 
         valueFiles:
-          - $values/infra/traefik/values.yaml
+          - $values/argo/apps/traefik/values.yaml
     - repoURL: https://github.com/dstanecki/zillow-housing-forecast.git
       targetRevision: HEAD
       ref: values

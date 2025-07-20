@@ -1,6 +1,8 @@
 # TODO
 
 ### High 
+- ApplicationSet for dev/prod argo apps
+- Monitor uptime and classify it as 99.9%, etc
 - Dedicate all high-write components to SSD node
 - Solution for aligning Redis cache with revolving data. (Actions workflow needs to trigger a redis clear on success)
 - Decide on how to handle kube-prometheus-stack (argocd giving me problems)
