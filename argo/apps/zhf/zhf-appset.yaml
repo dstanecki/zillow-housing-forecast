@@ -1,0 +1,43 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: zhf-appset
+  namespace: argocd
+spec:
+  goTemplate: true
+  generators:
+    - list:
+        elements:
+          - name: zhf-dev
+            namespace: dev
+            valuesFile: values-dev.yaml
+            autoSync: true
+            prune: true
+          - name: zhf-prod
+            namespace: prod
+            valuesFile: values-prod.yaml
+            autoSync: false
+  template:
+    metadata:
+      name: '{{ .name }}'
+    spec:
+      project: default
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: '{{ .namespace }}'
+      source:
+        repoURL: https://github.com/dstanecki/zillow-housing-forecast.git
+        targetRevision: HEAD
+        path: deployments/helm/zhf-chart
+  templatePatch: |
+    spec:
+      source:
+        helm:
+          valueFiles:
+            - '{{ .valuesFile }}'
+    {{- if .autoSync }}
+      syncPolicy:
+        automated:
+          prune: {{ .prune }}
+          selfHeal: true
+    {{- end }}
