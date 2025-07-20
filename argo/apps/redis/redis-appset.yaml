@@ -4,36 +4,50 @@ metadata:
   name: redis-appset
   namespace: argocd
 spec:
+  goTemplate: true
   generators:
     - list:
         elements:
-          - env: dev
+          - name: redis-dev
             namespace: dev
-            valuesPath: argo/apps/redis/values-dev.yaml
-            syncPolicy:
-              automated:
-                prune: true
-                selfHeal: true
-          - env: prod
+            valueFiles:
+              - argo/apps/redis/values-dev.yaml
+            autoSync: true
+            prune: true
+          - name: redis-prod
             namespace: prod
-            valuesPath: argo/apps/redis/values-prod.yaml
-            syncPolicy: {}
+            valueFiles:
+              - argo/apps/redis/values-prod.yaml
+            autoSync: false
   template:
     metadata:
-      name: redis-{{env}}
+      name: '{{ .name }}'
     spec:
       project: default
       destination:
         server: https://kubernetes.default.svc
-        namespace: '{{namespace}}'
+        namespace: '{{ .namespace }}'
+      sources:
+        - repoURL: https://github.com/dstanecki/zillow-housing-forecast.git
+          targetRevision: HEAD
+          ref: values
+  templatePatch: |
+    spec:
       sources:
         - repoURL: https://charts.bitnami.com/bitnami
           chart: redis
           targetRevision: 21.2.12
           helm:
             valueFiles:
-              - $values/{{valuesPath}}
+            {{- range .valueFiles }}
+              - $values/{{ . }}
+            {{- end }}
         - repoURL: https://github.com/dstanecki/zillow-housing-forecast.git
           targetRevision: HEAD
           ref: values
-      syncPolicy: {{syncPolicy}}
+    {{- if .autoSync }}
+      syncPolicy:
+        automated:
+          prune: {{ .prune }}
+          selfHeal: true
+    {{- end }}
