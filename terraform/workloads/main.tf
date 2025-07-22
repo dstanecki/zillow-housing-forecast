@@ -58,5 +58,5 @@ resource "helm_release" "argocd" {
   chart      = "argo-cd"
   version    = "8.1.3" # check latest: https://artifacthub.io/packages/helm/argo/argo-cd
   create_namespace = true
-  values = [file("../argo/apps/argocd/values.yaml")]
+  values = [file("../../argo/apps/argocd/values.yaml")]
 }
