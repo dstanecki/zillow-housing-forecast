@@ -3,13 +3,7 @@ provider "google" {
   region  = var.region
 }
 
-provider "helm" {
-  kubernetes = {
-    host                   = google_container_cluster.zhf_cluster.endpoint
-    token                  = data.google_client_config.default.access_token
-    cluster_ca_certificate = base64decode(google_container_cluster.zhf_cluster.master_auth[0].cluster_ca_certificate)
-  }
-}
+data "google_client_config" "default" {}
 
 resource "google_compute_network" "zhf_network" {
   name = "zhf-network"
@@ -59,17 +53,4 @@ resource "google_container_cluster" "zhf_cluster" {
   # Set `deletion_protection` to `true` will ensure that one cannot
   # accidentally delete this instance by use of Terraform.
   deletion_protection = false
-}
-
-data "google_client_config" "default" {}
-
-# Install ArgoCD
-resource "helm_release" "argocd" {
-  name       = "argocd"
-  namespace  = "argocd"
-  repository = "https://argoproj.github.io/argo-helm"
-  chart      = "argo-cd"
-  version    = "8.1.3" # check latest: https://artifacthub.io/packages/helm/argo/argo-cd
-  create_namespace = true
-  values = [file("../argo/apps/argocd/values.yaml")]
 }
