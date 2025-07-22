@@ -1,8 +1,10 @@
 # TODO
 
 ### High 
-- ApplicationSet for dev/prod argo apps
-- Monitor uptime and classify it as 99.9%, etc
+- Argo self manage
+- Monitor uptime and start collecting uptime metrics with a goal target (e.g. 4 nines)
+- Think about when zhf can become official. Who is the target, what do they need, maybe provide a free tier and give the paid tier unlimited queries? 
+	- Does Flask support oauth and payments?
 - Dedicate all high-write components to SSD node
 - Solution for aligning Redis cache with revolving data. (Actions workflow needs to trigger a redis clear on success)
 - Decide on how to handle kube-prometheus-stack (argocd giving me problems)
@@ -19,7 +21,14 @@
 - Traefik dashboard?
 - Implement tracing (OpenTel)
 - Helmify app labels and selectors on servicemonitor.yaml, etc. 
-- Email subscription (detect unusual swings in pricing predictions month-to-month)
+- Front end feature additions:
+	- Email subscription (detect unusual swings in pricing predictions month-to-month)
+	- Printable PDFT reports (e.g., rank zip code forecasts per state/county)
+	- Migration trends, crime, school rating trends, building permits
+	- Compare ZIPs 
+	- AI Chatbot (leaning away from this one though)
+	- Days on Market (DOM average), inventory per zip, rent ratios
+	- You want it to be an "insight". Home value insights? 
 - Create overarching architectural diagram once you have full EKS failover
 - Implement ELK stack
 - Think about RBAC and network pols
