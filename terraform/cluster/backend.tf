@@ -3,6 +3,6 @@ terraform {
 
   backend "gcs" {
     bucket  = "zhf-tfstate-bucket"
-    prefix  = "terraform/state"
+    prefix  = "terraform/cluster"
   }
 }

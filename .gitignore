@@ -1,9 +1,15 @@
-# Terraform
-terraform/.terraform/
-terraform/.terraform.lock.hcl
-terraform/terraform.tfstate
-terraform/terraform.tfstate.*
-terraform/terraform.tfvars
+# Global Terraform ignores for all stacks
+**/.terraform/
+**/.terraform.lock.hcl
+**/terraform.tfstate
+**/terraform.tfstate.*
+
+# Optional: Ignore local tfvars files if used
+**/*.tfvars
+**/*.tfvars.json
+
+# Ignore sensitive keys or credentials
+*.json
 
 # Python
 __pycache__/

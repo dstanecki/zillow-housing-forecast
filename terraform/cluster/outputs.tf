@@ -32,3 +32,8 @@ output "gke_auth_command" {
   description = "Command to configure kubectl for this GKE cluster"
   value       = "gcloud container clusters get-credentials ${google_container_cluster.zhf_cluster.name} --region ${var.region} --project ${var.project_id}"
 }
+
+output "ca_certificate" {
+  description = "Cluster CA certificate (base64)"
+  value       = google_container_cluster.zhf_cluster.master_auth[0].cluster_ca_certificate
+}
