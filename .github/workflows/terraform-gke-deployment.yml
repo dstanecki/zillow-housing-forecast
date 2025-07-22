@@ -29,14 +29,27 @@ jobs:
         uses: google-github-actions/setup-gcloud@v2
 
       - name: Terraform Init
-        working-directory: terraform
+        working-directory: terraform/cluster
         run: terraform init
 
       - name: Terraform Plan
-        working-directory: terraform
+        working-directory: terraform/cluster
         run: terraform plan
 
       - name: Terraform Apply
-        working-directory: terraform
+        working-directory: terraform/cluster
+        run: terraform apply -auto-approve
+
+# APPLY WORKLOADS like Helm installations
+      - name: Terraform Init
+        working-directory: terraform/workloads
+        run: terraform init
+
+      - name: Terraform Plan
+        working-directory: terraform/workloads
+        run: terraform plan
+
+      - name: Terraform Apply
+        working-directory: terraform/workloads
         run: terraform apply -auto-approve
         
