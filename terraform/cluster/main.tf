@@ -45,7 +45,7 @@ resource "google_container_cluster" "zhf_cluster" {
   subnetwork = google_compute_subnetwork.zhf_subnetwork.id
 
   ip_allocation_policy {
-    stack_type                    = "IPV4_IPV6"
+    # stack_type                    = "IPV4_IPV6"
     services_secondary_range_name = google_compute_subnetwork.zhf_subnetwork.secondary_ip_range[0].range_name
     cluster_secondary_range_name  = google_compute_subnetwork.zhf_subnetwork.secondary_ip_range[1].range_name
   }
