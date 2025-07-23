@@ -52,7 +52,6 @@ resource "kubernetes_cluster_role_binding" "terraform_cluster_admin" {
 
 # Install app of apps
 resource "kubernetes_manifest" "app_of_apps" {
-  depends_on = [helm_release.argocd]
   manifest = {
     apiVersion = "argoproj.io/v1alpha1"
     kind       = "Application"
