@@ -25,12 +25,12 @@ resource "google_compute_subnetwork" "zhf_subnetwork" {
   
   secondary_ip_range {
     range_name    = "services-range"
-    ip_cidr_range = "192.168.0.0/24"
+    ip_cidr_range = "192.168.16.0/24"
   }
 
   secondary_ip_range {
     range_name    = "pod-ranges"
-    ip_cidr_range = "192.168.1.0/20"
+    ip_cidr_range = "192.168.0.0/20"
   }
 }
 
