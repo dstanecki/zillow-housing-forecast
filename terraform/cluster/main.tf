@@ -3,22 +3,12 @@ provider "google" {
   region  = var.region
 }
 
-locals {
-  k8s_connection = {
-    host                   = "https://${data.terraform_remote_state.cluster.outputs.cluster_endpoint}"
-    token                  = data.google_client_config.default.access_token
-    cluster_ca_certificate = base64decode(data.terraform_remote_state.cluster.outputs.ca_certificate)
-  }
-}
-
-provider "kubernetes" {
-  host                   = local.k8s_connection.host
-  token                  = local.k8s_connection.token
-  cluster_ca_certificate = local.k8s_connection.cluster_ca_certificate
-}
-
 provider "helm" {
-  kubernetes = local.k8s_connection
+  kubernetes = {
+    host                   = google_container_cluster.zhf_cluster.endpoint
+    token                  = data.google_client_config.default.access_token
+    cluster_ca_certificate = base64decode(google_container_cluster.zhf_cluster.master_auth[0].cluster_ca_certificate)
+  }
 }
 
 data "google_client_config" "default" {}
