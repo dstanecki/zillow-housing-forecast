@@ -60,3 +60,38 @@ resource "helm_release" "argocd" {
   create_namespace = true
   values = [file("../../argo/apps/argocd/values.yaml")]
 }
+
+# Install App of Apps
+resource "kubernetes_manifest" "app_of_apps" {
+  depends_on = [helm_release.argocd]
+  manifest = {
+    apiVersion = "argoproj.io/v1alpha1"
+    kind       = "Application"
+    metadata = {
+      name      = "app-of-apps"
+      namespace = "argocd"
+    }
+    spec = {
+      project = "default"
+      source = {
+        repoURL        = "https://github.com/dstanecki/zillow-housing-forecast.git"
+        targetRevision = "HEAD"
+        path           = "argo/apps"
+        directory = {
+          recurse = true
+        }
+      }
+      destination = {
+        server    = "https://kubernetes.default.svc"
+        namespace = "argocd"
+      }
+      syncPolicy = {
+        automated = {
+          prune    = true
+          selfHeal = true
+        }
+      }
+    }
+  }
+}
+
