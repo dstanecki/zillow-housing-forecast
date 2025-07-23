@@ -61,6 +61,20 @@ resource "helm_release" "argocd" {
   values = [file("../../argo/apps/argocd/values.yaml")]
 }
 
+# Wait for Argo CRD to become available
+resource "null_resource" "wait_for_argocd_crd" {
+  provisioner "local-exec" {
+    command = <<EOT
+      for i in {1..30}; do
+        kubectl get crd applications.argoproj.io && exit 0
+        sleep 2
+      done
+      echo "ArgoCD CRD not ready in time" >&2
+      exit 1
+EOT
+  }
+}
+
 # Install App of Apps
 resource "kubernetes_manifest" "app_of_apps" {
   depends_on = [helm_release.argocd]
