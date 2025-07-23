@@ -38,7 +38,11 @@ resource "google_container_cluster" "zhf_cluster" {
   name = var.cluster_name
 
   location                 = var.region
-  enable_autopilot         = true
+  
+  remove_default_node_pool = true
+
+  initial_node_count = 1
+
   enable_l4_ilb_subsetting = true
 
   network    = google_compute_network.zhf_network.id
@@ -51,4 +55,19 @@ resource "google_container_cluster" "zhf_cluster" {
   }
 
   deletion_protection = false
+}
+
+resource "google_container_node_pool" "zhf_node_pool" {
+  name       = "default-node-pool"
+  cluster    = google_container_cluster.zhf_cluster.name
+  location   = var.region
+
+  node_count = 1
+
+  node_config {
+    machine_type = "e2-medium"
+    oauth_scopes = [
+      "https://www.googleapis.com/auth/cloud-platform",
+    ]
+  }
 }
