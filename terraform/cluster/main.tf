@@ -3,6 +3,24 @@ provider "google" {
   region  = var.region
 }
 
+locals {
+  k8s_connection = {
+    host                   = "https://${data.terraform_remote_state.cluster.outputs.cluster_endpoint}"
+    token                  = data.google_client_config.default.access_token
+    cluster_ca_certificate = base64decode(data.terraform_remote_state.cluster.outputs.ca_certificate)
+  }
+}
+
+provider "kubernetes" {
+  host                   = local.k8s_connection.host
+  token                  = local.k8s_connection.token
+  cluster_ca_certificate = local.k8s_connection.cluster_ca_certificate
+}
+
+provider "helm" {
+  kubernetes = local.k8s_connection
+}
+
 data "google_client_config" "default" {}
 
 resource "google_compute_network" "zhf_network" {
@@ -70,4 +88,15 @@ resource "google_container_node_pool" "zhf_node_pool" {
       "https://www.googleapis.com/auth/cloud-platform",
     ]
   }
+}
+
+# Install ArgoCD
+resource "helm_release" "argocd" {
+  name       = "argocd"
+  namespace  = "argocd"
+  repository = "https://argoproj.github.io/argo-helm"
+  chart      = "argo-cd"
+  version    = "8.1.3" # check latest: https://artifacthub.io/packages/helm/argo/argo-cd
+  create_namespace = true
+  values = [file("../../argo/apps/argocd/values.yaml")]
 }

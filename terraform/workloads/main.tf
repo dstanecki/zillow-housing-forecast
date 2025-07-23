@@ -50,32 +50,7 @@ resource "kubernetes_cluster_role_binding" "terraform_cluster_admin" {
   }
 }
 
-# Install ArgoCD
-resource "helm_release" "argocd" {
-  name       = "argocd"
-  namespace  = "argocd"
-  repository = "https://argoproj.github.io/argo-helm"
-  chart      = "argo-cd"
-  version    = "8.1.3" # check latest: https://artifacthub.io/packages/helm/argo/argo-cd
-  create_namespace = true
-  values = [file("../../argo/apps/argocd/values.yaml")]
-}
-
-# Wait for Argo CRD to become available
-resource "null_resource" "wait_for_argocd_crd" {
-  provisioner "local-exec" {
-    command = <<EOT
-      for i in {1..30}; do
-        kubectl get crd applications.argoproj.io && exit 0
-        sleep 2
-      done
-      echo "ArgoCD CRD not ready in time" >&2
-      exit 1
-EOT
-  }
-}
-
-# Install App of Apps
+# Install app of apps
 resource "kubernetes_manifest" "app_of_apps" {
   depends_on = [helm_release.argocd]
   manifest = {
