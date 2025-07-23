@@ -98,7 +98,7 @@ resource "helm_release" "cert_manager" {
   chart      = "cert-manager"
   version    = "v1.18.0"
   create_namespace = true
-  values = [file("../../argo/apps/cert-manager/values.yaml]
+  values = [file("../../argo/apps/cert-manager/values.yaml")]
 }
 
 resource "helm_release" "kube_prometheus_stack" {
