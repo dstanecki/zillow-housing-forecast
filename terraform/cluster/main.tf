@@ -11,6 +11,12 @@ provider "helm" {
   }
 }
 
+provider "kubernetes" {
+  host                   = google_container_cluster.zhf_cluster.endpoint
+  token                  = data.google_client_config.default.access_token
+  cluster_ca_certificate = base64decode(google_container_cluster.zhf_cluster.master_auth[0].cluster_ca_certificate)
+}
+
 data "google_client_config" "default" {}
 
 resource "google_compute_network" "zhf_network" {
