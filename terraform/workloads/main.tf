@@ -9,7 +9,7 @@ data "terraform_remote_state" "cluster" {
   backend = "gcs"
   config = {
     bucket = "zhf-tfstate-bucket"
-    prefix = "terraform/state"
+    prefix = "terraform/cluster"
   }
 }
 
