@@ -120,3 +120,15 @@ resource "helm_release" "traefik" {
 
   create_namespace = true
 }
+
+resource "kubernetes_namespace" "dev" {
+  metadata {
+    name = "dev"
+  }
+}
+
+resource "kubernetes_namespace" "prod" {
+  metadata {
+    name = "prod"
+  }
+}
