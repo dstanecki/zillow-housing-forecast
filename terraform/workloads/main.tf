@@ -15,7 +15,7 @@ data "terraform_remote_state" "cluster" {
 
 locals {
   k8s_connection = {
-    host                   = data.terraform_remote_state.cluster.outputs.cluster_endpoint
+    host                   = "https://${data.terraform_remote_state.cluster.outputs.cluster_endpoint}"
     token                  = data.google_client_config.default.access_token
     cluster_ca_certificate = base64decode(data.terraform_remote_state.cluster.outputs.ca_certificate)
   }
