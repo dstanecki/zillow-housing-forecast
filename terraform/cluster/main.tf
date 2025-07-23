@@ -90,3 +90,37 @@ resource "helm_release" "argocd" {
   create_namespace = true
   values = [file("../../argo/apps/argocd/values.yaml")]
 }
+
+resource "helm_release" "cert_manager" {
+  name       = "cert-manager"
+  namespace  = "cert-manager"
+  repository = "https://charts.jetstack.io"
+  chart      = "cert-manager"
+  version    = "v1.18.0"
+  create_namespace = true
+
+  set {
+    name  = "installCRDs"
+    value = "true"
+  }
+}
+
+resource "helm_release" "kube_prometheus_stack" {
+  name       = "kube-prometheus-stack"
+  namespace  = "monitoring"
+  repository = "https://prometheus-community.github.io/helm-charts"
+  chart      = "kube-prometheus-stack"
+  version    = "75.11.0" 
+
+  create_namespace = true
+}
+
+resource "helm_release" "traefik" {
+  name       = "traefik"
+  namespace  = "kube-system"
+  repository = "https://helm.traefik.io/traefik"
+  chart      = "traefik"
+  version    = "36.3.0" 
+
+  create_namespace = true
+}
