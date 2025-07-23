@@ -98,11 +98,6 @@ resource "helm_release" "cert_manager" {
   chart      = "cert-manager"
   version    = "v1.18.0"
   create_namespace = true
-
-  set {
-    name  = "installCRDs"
-    value = "true"
-  }
 }
 
 resource "helm_release" "kube_prometheus_stack" {
