@@ -69,6 +69,12 @@ resource "google_container_cluster" "zhf_cluster" {
   }
 
   deletion_protection = false
+
+  timeouts {
+    create = "20m"
+    update = "20m"
+    delete = "15m"
+  }
 }
 
 resource "google_container_node_pool" "zhf_node_pool" {
