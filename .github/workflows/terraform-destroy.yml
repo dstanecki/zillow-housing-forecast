@@ -85,4 +85,5 @@ jobs:
 
       - name: Terraform Destroy Cluster
         working-directory: terraform/cluster
-        run: terraform destroy -auto-approve
+        run: terraform plan -destroy # TEMPORARY PLAN FOR TESTING
+        # run: terraform destroy -auto-approve
