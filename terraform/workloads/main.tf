@@ -51,7 +51,7 @@ resource "kubernetes_cluster_role_binding" "terraform_cluster_admin" {
 }
 
 # SECRETS
-resource "kubernetes_secret" "db_password" {
+resource "kubernetes_secret" "db_password_dev" {
   metadata {
     name      = "db-password"
     namespace = "dev"
@@ -63,7 +63,7 @@ resource "kubernetes_secret" "db_password" {
 
   type = "Opaque"
 }
-resource "kubernetes_secret" "db_password" {
+resource "kubernetes_secret" "db_password_prod" {
   metadata {
     name      = "db-password"
     namespace = "prod"
@@ -75,7 +75,7 @@ resource "kubernetes_secret" "db_password" {
 
   type = "Opaque"
 }
-resource "kubernetes_secret" "redis_password" {
+resource "kubernetes_secret" "redis_password_dev" {
   metadata {
     name      = "redis-password"
     namespace = "dev"
@@ -87,7 +87,7 @@ resource "kubernetes_secret" "redis_password" {
 
   type = "Opaque"
 }
-resource "kubernetes_secret" "redis_password" {
+resource "kubernetes_secret" "redis_password_prod" {
   metadata {
     name      = "redis-password"
     namespace = "prod"
@@ -99,7 +99,7 @@ resource "kubernetes_secret" "redis_password" {
 
   type = "Opaque"
 }
-resource "kubernetes_secret" "azure_ai_openapi_key" {
+resource "kubernetes_secret" "azure_ai_openapi_key_prod" {
   metadata {
     name      = "azure-ai-openapi-key"
     namespace = "prod"
@@ -111,7 +111,7 @@ resource "kubernetes_secret" "azure_ai_openapi_key" {
 
   type = "Opaque"
 }
-resource "kubernetes_secret" "azure_ai_openapi_key" {
+resource "kubernetes_secret" "azure_ai_openapi_key_dev" {
   metadata {
     name      = "azure-ai-openapi-key"
     namespace = "dev"
