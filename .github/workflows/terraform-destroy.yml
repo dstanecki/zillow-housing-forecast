@@ -1,0 +1,51 @@
+name: Terraform Destroy
+
+on:
+  workflow_dispatch:
+
+env:
+  TF_VAR_project_id: ${{ secrets.GCP_PROJECT_ID }} 
+  TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
+  TF_VAR_azure_ai_openapi_key: ${{ secrets.AZURE_AI_OPENAPI_KEY }}
+  TF_VAR_recaptcha_secret_key_prod: ${{ secrets.RECAPTCHA_SECRET_KEY_PROD }}
+  TF_VAR_recaptcha_secret_key_dev: ${{ secrets.RECAPTCHA_SECRET_KEY_DEV }}
+  TF_VAR_redis_password: ${{ secrets.REDIS_PASSWORD }}
+
+jobs:
+  terraform:
+    name: Destroy all
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.12.2
+
+      - name: Authenticate with Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: '${{ secrets.GOOGLE_CREDENTIALS }}'
+
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Terraform Init
+        working-directory: terraform/workloads
+        run: terraform init
+
+      - name: Terraform Destroy
+        working-directory: terraform/workloads
+        run: terraform destroy -auto-approve
+
+      - name: Terraform Init
+        working-directory: terraform/cluster
+        run: terraform init
+
+      - name: Terraform Plan
+        working-directory: terraform/cluster
+        run: terraform destroy -auto-approve
+        
