@@ -1,4 +1,4 @@
-name: Build and Push zhf-mariadb:latest # Latest tag used exclusively for dev deployments
+name: Build and push mariaDB container
 
 on:
   workflow_run: 
