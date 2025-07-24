@@ -1,4 +1,4 @@
-provider "google" {
+\provider "google" {
   project = var.project_id
   region  = var.region
 }
@@ -48,6 +48,104 @@ resource "kubernetes_cluster_role_binding" "terraform_cluster_admin" {
     name      = var.terraform_service_account_email
     api_group = "rbac.authorization.k8s.io"
   }
+}
+
+# SECRETS
+resource "kubernetes_secret" "db_password" {
+  metadata {
+    name      = "db-password"
+    namespace = "dev"
+  }
+
+  string_data = {
+    DB_PASSWORD = var.db_password
+  }
+
+  type = "Opaque"
+}
+resource "kubernetes_secret" "db_password" {
+  metadata {
+    name      = "db-password"
+    namespace = "prod"
+  }
+
+  string_data = {
+    DB_PASSWORD = var.db_password
+  }
+
+  type = "Opaque"
+}
+resource "kubernetes_secret" "redis_password" {
+  metadata {
+    name      = "redis-password"
+    namespace = "dev"
+  }
+
+  string_data = {
+    redis-password = var.redis_password
+  }
+
+  type = "Opaque"
+}
+resource "kubernetes_secret" "redis_password" {
+  metadata {
+    name      = "redis-password"
+    namespace = "prod"
+  }
+
+  string_data = {
+    redis-password = var.redis_password
+  }
+
+  type = "Opaque"
+}
+resource "kubernetes_secret" "azure_ai_openapi_key" {
+  metadata {
+    name      = "azure-ai-openapi-key"
+    namespace = "prod"
+  }
+
+  string_data = {
+    SUBSCRIPTION_KEY = var.azure_ai_openapi_key
+  }
+
+  type = "Opaque"
+}
+resource "kubernetes_secret" "azure_ai_openapi_key" {
+  metadata {
+    name      = "azure-ai-openapi-key"
+    namespace = "dev"
+  }
+
+  string_data = {
+    SUBSCRIPTION_KEY = var.azure_ai_openapi_key
+  }
+
+  type = "Opaque"
+}
+resource "kubernetes_secret" "recaptcha_secret_key_prod" {
+  metadata {
+    name      = "recaptcha-secret-key"
+    namespace = "prod"
+  }
+
+  string_data = {
+    RECAPTCHA_SECRET_KEY = var.recaptcha_secret_key_prod
+  }
+
+  type = "Opaque"
+}
+resource "kubernetes_secret" "recaptcha_secret_key_dev" {
+  metadata {
+    name      = "recaptcha-secret-key"
+    namespace = "dev"
+  }
+
+  string_data = {
+    RECAPTCHA_SECRET_KEY = var.recaptcha_secret_key_dev
+  }
+
+  type = "Opaque"
 }
 
 # Install app of apps
