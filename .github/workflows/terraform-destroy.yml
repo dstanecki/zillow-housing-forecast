@@ -33,7 +33,17 @@ jobs:
       - name: Set up Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
 
-      - name: Terraform Init
+      - name: Install kubectl and jq
+        run: |
+          sudo apt-get update && sudo apt-get install -y kubectl jq
+
+      - name: Configure kubectl
+        run: |
+          gcloud container clusters get-credentials zhf-cluster \
+            --region us-east4 \
+            --project ${{ secrets.GCP_PROJECT_ID }}
+
+      - name: Terraform Init - Workloads
         working-directory: terraform/workloads
         run: terraform init
 
@@ -41,11 +51,28 @@ jobs:
         working-directory: terraform/workloads
         run: terraform destroy -auto-approve
 
-      - name: Terraform Init
+      - name: Terraform Init - Cluster
         working-directory: terraform/cluster
         run: terraform init
+
+      - name: Patch finalizers
+        run: |
+          for ns in dev prod; do
+            if kubectl get ns $ns &>/dev/null; then
+              kubectl get ns $ns -o json | \
+                jq 'del(.spec.finalizers)' | \
+                kubectl replace --raw "/api/v1/namespaces/$ns/finalize" -f - || true
+            fi
+          done
+
+      - name: Clean up CRDs and Terraform state
+        working-directory: terraform/cluster
+        run: |
+          kubectl delete crd --all --ignore-not-found || true
+          kubectl delete ns dev prod --ignore-not-found --grace-period=0 --force || true
+          terraform state rm 'kubernetes_namespace.dev' || true
+          terraform state rm 'kubernetes_namespace.prod' || true
 
       - name: Terraform Destroy Cluster
         working-directory: terraform/cluster
         run: terraform destroy -auto-approve
-        
