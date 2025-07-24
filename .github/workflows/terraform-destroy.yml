@@ -45,7 +45,6 @@ jobs:
       - name: Configure kubectl
         run: |
           gcloud container clusters get-credentials zhf-cluster \
-            --region us-east4 \
             --project ${{ secrets.GCP_PROJECT_ID }}
 
       - name: Terraform Init - Workloads
