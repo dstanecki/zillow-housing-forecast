@@ -57,7 +57,7 @@ resource "kubernetes_secret" "db_password_dev" {
     namespace = "dev"
   }
 
-  string_data = {
+  data = {
     DB_PASSWORD = var.db_password
   }
 
@@ -69,7 +69,7 @@ resource "kubernetes_secret" "db_password_prod" {
     namespace = "prod"
   }
 
-  string_data = {
+  data = {
     DB_PASSWORD = var.db_password
   }
 
@@ -81,7 +81,7 @@ resource "kubernetes_secret" "redis_password_dev" {
     namespace = "dev"
   }
 
-  string_data = {
+  data = {
     redis-password = var.redis_password
   }
 
@@ -93,7 +93,7 @@ resource "kubernetes_secret" "redis_password_prod" {
     namespace = "prod"
   }
 
-  string_data = {
+  data = {
     redis-password = var.redis_password
   }
 
@@ -105,7 +105,7 @@ resource "kubernetes_secret" "azure_ai_openapi_key_prod" {
     namespace = "prod"
   }
 
-  string_data = {
+  data = {
     SUBSCRIPTION_KEY = var.azure_ai_openapi_key
   }
 
@@ -117,7 +117,7 @@ resource "kubernetes_secret" "azure_ai_openapi_key_dev" {
     namespace = "dev"
   }
 
-  string_data = {
+  data = {
     SUBSCRIPTION_KEY = var.azure_ai_openapi_key
   }
 
@@ -129,7 +129,7 @@ resource "kubernetes_secret" "recaptcha_secret_key_prod" {
     namespace = "prod"
   }
 
-  string_data = {
+  data = {
     RECAPTCHA_SECRET_KEY = var.recaptcha_secret_key_prod
   }
 
@@ -141,7 +141,7 @@ resource "kubernetes_secret" "recaptcha_secret_key_dev" {
     namespace = "dev"
   }
 
-  string_data = {
+  data = {
     RECAPTCHA_SECRET_KEY = var.recaptcha_secret_key_dev
   }
 
