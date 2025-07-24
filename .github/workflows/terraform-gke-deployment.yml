@@ -4,7 +4,12 @@ on:
   workflow_dispatch:
 
 env:
-  TF_VAR_project_id: ${{ secrets.GCP_PROJECT_ID }} # Terraform automatically maps env variables that follow the TF_VAR_<variable_name> pattern to the corresponding variable in .tf file
+  TF_VAR_project_id: ${{ secrets.GCP_PROJECT_ID }} 
+  TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
+  TF_VAR_azure_ai_openapi_key: ${{ secrets.AZURE_AI_OPENAPI_KEY }}
+  TF_VAR_recaptcha_secret_key_prod: ${{ secrets.RECAPTCHA_SECRET_KEY_PROD }}
+  TF_VAR_recaptcha_secret_key_dev: ${{ secrets.RECAPTCHA_SECRET_KEY_DEV }}
+  TF_VAR_redis_password: ${{ secrets.REDIS_PASSWORD }}
 
 jobs:
   terraform:
@@ -40,7 +45,7 @@ jobs:
         working-directory: terraform/cluster
         run: terraform apply -auto-approve
 
-# APPLY WORKLOADS like Helm installations
+      # APPLY WORKLOADS e.g. ArgoCD apps
       - name: Terraform Init
         working-directory: terraform/workloads
         run: terraform init
