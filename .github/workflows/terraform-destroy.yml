@@ -37,7 +37,7 @@ jobs:
         working-directory: terraform/workloads
         run: terraform init
 
-      - name: Terraform Destroy
+      - name: Terraform Destroy Workloads
         working-directory: terraform/workloads
         run: terraform destroy -auto-approve
 
@@ -45,7 +45,7 @@ jobs:
         working-directory: terraform/cluster
         run: terraform init
 
-      - name: Terraform Plan
+      - name: Terraform Destroy Cluster
         working-directory: terraform/cluster
         run: terraform destroy -auto-approve
         
