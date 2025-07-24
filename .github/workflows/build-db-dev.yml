@@ -1,4 +1,4 @@
-name: Build and push mariaDB container
+name: Build MariaDB Container
 
 on:
   workflow_run: 
