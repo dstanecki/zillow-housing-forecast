@@ -33,21 +33,8 @@ jobs:
       - name: Set up Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
 
-      - name: Install gke-gcloud-auth-plugin
-        run: |
-          gcloud components install gke-gcloud-auth-plugin --quiet
-          echo "export USE_GKE_GCLOUD_AUTH_PLUGIN=True" >> $GITHUB_ENV
-
-      - name: Install kubectl and jq
-        run: |
-          sudo apt-get update && sudo apt-get install -y kubectl jq
-
-      - name: Configure kubectl
-        run: |
-          gcloud container clusters get-credentials zhf-cluster \
-            --project ${{ secrets.GCP_PROJECT_ID }}
-
-      - name: Terraform Init - Workloads
+      # Destroy workloads
+      - name: Terraform Init (workloads)
         working-directory: terraform/workloads
         run: terraform init
 
@@ -55,25 +42,39 @@ jobs:
         working-directory: terraform/workloads
         run: terraform destroy -auto-approve
 
-      - name: Terraform Init - Cluster
+      # Get region from terraform output
+      - name: Terraform Init (cluster)
         working-directory: terraform/cluster
         run: terraform init
 
-      - name: Patch finalizers
+      - name: Extract region from Terraform
+        working-directory: terraform/cluster
+        id: tf_outputs
+        run: |
+          REGION=$(terraform output -raw region)
+          echo "REGION=$REGION" >> $GITHUB_ENV
+
+      # Configure kubectl with dynamic region
+      - name: Configure kubectl
+        run: |
+          gcloud container clusters get-credentials zhf-cluster \
+            --region "$REGION" \
+            --project "$TF_VAR_project_id"
+
+      # Force delete stuck namespaces (finalizers)
+      - name: Force delete stuck namespaces
         run: |
           for ns in dev prod; do
-            if kubectl get ns $ns &>/dev/null; then
-              kubectl get ns $ns -o json | \
-                jq 'del(.spec.finalizers)' | \
-                kubectl replace --raw "/api/v1/namespaces/$ns/finalize" -f - || true
-            fi
+            kubectl get namespace $ns -o json 2>/dev/null | \
+              jq 'del(.spec.finalizers)' | \
+              kubectl replace --raw "/api/v1/namespaces/$ns/finalize" -f - || true
           done
 
-      - name: Clean up CRDs and Terraform state
+      # Clean up CRDs and Terraform state
+      - name: Clean up CRDs and namespace state
         working-directory: terraform/cluster
         run: |
           kubectl delete crd --all --ignore-not-found || true
-          kubectl delete ns dev prod --ignore-not-found --grace-period=0 --force || true
           terraform state rm 'kubernetes_namespace.dev' || true
           terraform state rm 'kubernetes_namespace.prod' || true
 
