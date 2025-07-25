@@ -1,7 +1,9 @@
 name: Terraform GKE Deployment
 
 on:
-  workflow_dispatch:
+  repository_dispatch:
+    types: [trigger-fallback]
+  workflow_dispatch: 
 
 env:
   TF_VAR_project_id: ${{ secrets.GCP_PROJECT_ID }} 
@@ -34,28 +36,46 @@ jobs:
       - name: Set up Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
 
-      - name: Terraform Init
+      - name: Cluster Terraform Init
         working-directory: terraform/cluster
         run: terraform init
 
-      - name: Terraform Plan
+      - name: Cluster Terraform Plan
         working-directory: terraform/cluster
         run: terraform plan
 
-      - name: Terraform Apply
+      - name: Cluster Terraform Apply
         working-directory: terraform/cluster
         run: terraform apply -auto-approve
 
+      - name: Get cluster endpoint
+        id: get-cluster-endpoint
+        working-directory: terraform/cluster
+        run: |
+          endpoint=$(terraform output -raw cluster_endpoint)
+          echo "cluster_endpoint=$endpoint" >> $GITHUB_OUTPUT
+
       # APPLY WORKLOADS e.g. ArgoCD apps
-      - name: Terraform Init
+      - name: Workloads Terraform Init
         working-directory: terraform/workloads
         run: terraform init
 
-      - name: Terraform Plan
+      - name: Workloads Terraform Plan
         working-directory: terraform/workloads
         run: terraform plan
 
-      - name: Terraform Apply
+      - name: Workloads Terraform Apply
         working-directory: terraform/workloads
         run: terraform apply -auto-approve
         
+      - name: Update DNS record
+        run: |
+          endpoint="${{ steps.get-cluster-endpoint.outputs.cluster_endpoint }}"
+          curl -X PATCH "https://api.cloudflare.com/client/v4/zones/$ZONE_ID/dns_records/$DNS_RECORD_ID" \
+            -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d "{\"name\":\"zhf-dev.danielstanecki.com\",\"type\":\"A\",\"comment\":\"Domain verification record\",\"content\":\"$endpoint\",\"proxied\":true}"
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          ZONE_ID: ${{ secrets.CLOUDFLARE_ZONE_ID }}
+          DNS_RECORD_ID: ${{ secrets.DNS_RECORD_ID }}

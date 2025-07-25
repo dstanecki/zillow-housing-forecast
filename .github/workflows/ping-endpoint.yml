@@ -1,0 +1,58 @@
+name: Monitor Endpoint
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"  # every 5 minutes (quickest frequency allowed)
+  workflow_dispatch:       # allows manual trigger
+
+jobs:
+  ping-endpoint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping endpoint
+        id: ping
+        run: |
+          response=$(curl -s -o /dev/null -w "%{http_code}" https://zhf-dev.danielstanecki.com/ready)
+          echo "HTTP status: $response"
+          echo "response_code=$response" >> $GITHUB_OUTPUT
+
+      - name: Check status code and set failure flag
+        id: check
+        run: |
+          if [ "${{ steps.ping.outputs.response_code }}" != "200" ]; then
+            echo "status=fail" >> $GITHUB_OUTPUT
+          else
+            echo "status=ok" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Cache failure count
+        uses: actions/cache@v3
+        with:
+          path: .cache
+          key: ping-status
+
+      - name: Load and update failure count
+        id: failure-count
+        run: |
+          mkdir -p .cache
+          file=".cache/failure_count.txt"
+          count=0
+          [ -f "$file" ] && count=$(cat "$file")
+          if [ "${{ steps.check.outputs.status }}" == "fail" ]; then
+            count=$((count+1))
+          else
+            count=0
+          fi
+          echo "$count" > "$file"
+          echo "fail_count=$count" >> $GITHUB_OUTPUT
+          echo "Current failure count: $count"
+
+      - name: Trigger Deploy to GKE
+        if: ${{ steps.failure-count.outputs.fail_count >= 1 }}
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
+        run: |
+          curl -X POST https://api.github.com/repos/${{ github.repository }}/dispatches \
+            -H "Authorization: token $GH_PAT" \
+            -H "Accept: application/vnd.github.v3+json" \
+            -d '{"event_type": "trigger-fallback"}'
