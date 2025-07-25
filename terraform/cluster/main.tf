@@ -78,14 +78,14 @@ resource "google_container_cluster" "zhf_cluster" {
 }
 
 resource "google_container_node_pool" "zhf_node_pool" {
-  name       = "default-node-pool"
+  name       = "zhf-node-pool"
   cluster    = google_container_cluster.zhf_cluster.name
   location   = var.region
 
-  node_count = 1
+  node_count = 4
 
   node_config {
-    machine_type = "e2-standard-4"
+    machine_type = "e2-medium"
     oauth_scopes = [
       "https://www.googleapis.com/auth/cloud-platform",
     ]
