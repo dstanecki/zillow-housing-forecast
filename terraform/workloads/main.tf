@@ -147,6 +147,18 @@ resource "kubernetes_secret" "recaptcha_secret_key_dev" {
 
   type = "Opaque"
 }
+resource "kubernetes_secret" "cloudflare_api_token_secret" {
+  metadata {
+    name      = "cloudflare-api-token-secret"
+    namespace = "cert-manager"
+  }
+
+  data = {
+    api-token = var.cloudflare_api_token_secret
+  }
+
+  type = "Opaque"
+}
 
 # Install app of apps
 resource "kubernetes_manifest" "app_of_apps" {
