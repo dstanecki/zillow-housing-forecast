@@ -45,9 +45,12 @@ jobs:
           echo "$count" > "$file"
           echo "fail_count=$count" >> $GITHUB_OUTPUT
 
-      - name: Trigger fallback if threshold exceeded
+      - name: Trigger Deploy to GKE
         if: ${{ steps.failure-count.outputs.fail_count >= 3 }}
-        uses: peter-evans/workflow-dispatch@v1
-        with:
-          workflow: terraform-gke-deployment.yml
-          ref: main
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
+        run: |
+          curl -X POST https://api.github.com/repos/${{ github.repository }}/dispatches \
+            -H "Authorization: token $GH_PAT" \
+            -H "Accept: application/vnd.github.v3+json" \
+            -d '{"event_type": "trigger-fallback"}'
