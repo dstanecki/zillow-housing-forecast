@@ -37,3 +37,7 @@ output "ca_certificate" {
   description = "Cluster CA certificate (base64)"
   value       = google_container_cluster.zhf_cluster.master_auth[0].cluster_ca_certificate
 }
+
+output "traefik_load_balancer_ip" {
+  value       = data.kubernetes_service.traefik.status[0].load_balancer[0].ingress[0].ip
+}

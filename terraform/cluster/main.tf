@@ -133,6 +133,15 @@ resource "helm_release" "traefik" {
   create_namespace = true
 }
 
+data "kubernetes_service" "traefik" {
+  metadata {
+    name      = "traefik"
+    namespace = "kube-system"
+  }
+
+  depends_on = [helm_release.traefik]
+}
+
 resource "kubernetes_namespace" "dev" {
   metadata {
     name = "dev"
