@@ -1,4 +1,4 @@
-name: Monitor Endpoint
+name: Ping Endpoint
 
 on:
   schedule:
