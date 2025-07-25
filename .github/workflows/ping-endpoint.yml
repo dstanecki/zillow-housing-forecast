@@ -23,6 +23,7 @@ jobs:
             echo "status=fail" >> $GITHUB_OUTPUT
           else
             echo "status=ok" >> $GITHUB_OUTPUT
+          fi
 
       - name: Cache failure count
         uses: actions/cache@v3
