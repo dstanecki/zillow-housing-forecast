@@ -13,8 +13,6 @@ env:
   TF_VAR_recaptcha_secret_key_dev: ${{ secrets.RECAPTCHA_SECRET_KEY_DEV }}
   TF_VAR_redis_password: ${{ secrets.REDIS_PASSWORD }}
   TF_VAR_cloudflare_api_token_secret: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-  CLOUDFLARE_ZONE_ID: ${{ secrets.CLOUDFLARE_ZONE_ID }}
-  DNS_RECORD_ID: ${{ secrets.DNS_RECORD_ID }}
 
 jobs:
   terraform:
@@ -70,3 +68,14 @@ jobs:
         working-directory: terraform/workloads
         run: terraform apply -auto-approve
         
+      - name: Update DNS record
+        run: |
+          endpoint="${{ steps.get-cluster-endpoint.outputs.cluster_endpoint }}"
+          curl -X PATCH "https://api.cloudflare.com/client/v4/zones/$ZONE_ID/dns_records/$DNS_RECORD_ID" \
+            -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d "{\"name\":\"zhf-dev.danielstanecki.com\",\"type\":\"A\",\"comment\":\"Domain verification record\",\"content\":\"$endpoint\",\"proxied\":true}"
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          ZONE_ID: ${{ secrets.CLOUDFLARE_ZONE_ID }}
+          DNS_RECORD_ID: ${{ secrets.DNS_RECORD_ID }}
