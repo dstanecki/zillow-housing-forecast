@@ -45,6 +45,7 @@ jobs:
           fi
           echo "$count" > "$file"
           echo "fail_count=$count" >> $GITHUB_OUTPUT
+          echo "Current failure count: $count"
 
       - name: Trigger Deploy to GKE
         if: ${{ steps.failure-count.outputs.fail_count >= 3 }}
