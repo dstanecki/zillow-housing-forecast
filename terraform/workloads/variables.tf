@@ -37,3 +37,7 @@ variable "recaptcha_secret_key_prod" {
   sensitive = true
 }
 
+variable "cloudflare_api_token_secret" {
+  type      = string
+  sensitive = true
+}
