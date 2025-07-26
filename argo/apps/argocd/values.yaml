@@ -1,6 +1,10 @@
 configs:
   params:
     server.insecure: "true" # Disable ArgoCD's TLS management because Traefik is handling TLS
+  rbac:
+    policy.default: role:admin
+    policy.csv: |
+      g, admin, role:admin
 
 server:
   service:
