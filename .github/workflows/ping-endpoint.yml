@@ -1,4 +1,4 @@
-name: Monitor Endpoint
+name: Ping Endpoint
 
 on:
   schedule:
@@ -48,7 +48,7 @@ jobs:
           echo "Current failure count: $count"
 
       - name: Trigger Deploy to GKE
-        if: ${{ steps.failure-count.outputs.fail_count >= 1 }}
+        if: ${{ steps.failure-count.outputs.fail_count >= 3 }}
         env:
           GH_PAT: ${{ secrets.GH_PAT }}
         run: |
