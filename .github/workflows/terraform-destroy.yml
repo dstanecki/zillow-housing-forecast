@@ -86,8 +86,25 @@ jobs:
           terraform state rm 'helm_release.traefik' || true
           terraform state rm 'kubernetes_namespace.dev' || true
           terraform state rm 'kubernetes_namespace.prod' || true
-          
 
       - name: Terraform Destroy Cluster
         working-directory: terraform/cluster
         run: terraform destroy -auto-approve
+
+      - name: Update DNS record
+        run: | 
+          curl -X PATCH "https://api.cloudflare.com/client/v4/zones/$ZONE_ID/dns_records/$DNS_RECORD_ID" \
+            -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "name": "zhf.danielstanecki.com",
+              "type": "CNAME",
+              "comment": "Domain verification record",
+              "content": "'"$ONPREM_DNS_RECORD"'",
+              "proxied": true
+            }'
+        env:
+          ONPREM_DNS_RECORD: ${{ secrets.ONPREM_DNS_RECORD }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          ZONE_ID: ${{ secrets.CLOUDFLARE_ZONE_ID }}
+          DNS_RECORD_ID: ${{ secrets.DNS_RECORD_ID }}
