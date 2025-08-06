@@ -49,22 +49,22 @@ jobs:
         working-directory: terraform/cluster
         run: terraform init
 
-      - name: Extract region from Terraform
+      - name: Extract zone from Terraform
         working-directory: terraform/cluster
         id: tf_outputs
         run: |
-          REGION=$(terraform output -raw region)
-          echo "REGION=$REGION" >> $GITHUB_ENV
-
+          ZONE=$(terraform output -raw zone)
+          echo "ZONE=$ZONE" >> $GITHUB_ENV
+      
       - name: Install gke-gcloud-auth-plugin
         run: |
           gcloud components install gke-gcloud-auth-plugin --quiet
-
-      # Configure kubectl with dynamic region
+      
+      # Configure kubectl with dynamic zone
       - name: Configure kubectl
         run: |
           gcloud container clusters get-credentials zhf-cluster \
-            --region "$REGION" \
+            --zone "$ZONE" \
             --project "$TF_VAR_project_id"
 
       # Force delete stuck namespaces (finalizers)
