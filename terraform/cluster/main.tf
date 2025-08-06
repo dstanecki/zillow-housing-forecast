@@ -114,6 +114,13 @@ resource "helm_release" "argocd" {
   version    = "8.1.3" # check latest: https://artifacthub.io/packages/helm/argo/argo-cd
   create_namespace = true
   values = [file("../../argo/apps/argocd/values.yaml")]
+
+  timeout    = 900
+  force_update = true
+
+  lifecycle {
+    prevent_destroy = false
+  }
 }
 
 resource "helm_release" "cert_manager" {
