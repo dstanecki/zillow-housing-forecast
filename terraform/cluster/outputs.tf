@@ -8,6 +8,11 @@ output "region" {
   value       = var.region
 }
 
+output "zone" {
+  description = "Zone where GKE cluster is deployed"
+  value       = var.zone
+}
+
 output "cluster_name" {
   description = "Name of the GKE cluster"
   value       = google_container_cluster.zhf_cluster.name
