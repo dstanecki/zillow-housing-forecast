@@ -16,7 +16,8 @@ spec:
           - name: zhf-prod
             namespace: prod
             valuesFile: values-prod.yaml
-            autoSync: false
+            autoSync: true
+            prune: true
   template:
     metadata:
       name: '{{ .name }}'

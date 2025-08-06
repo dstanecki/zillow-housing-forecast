@@ -18,7 +18,8 @@ spec:
             namespace: prod
             valueFiles:
               - argo/apps/redis/values-prod.yaml
-            autoSync: false
+            autoSync: true
+            prune: true
   template:
     metadata:
       name: '{{ .name }}'
