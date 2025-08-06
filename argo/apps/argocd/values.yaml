@@ -1,10 +1,10 @@
+crds:
+  install: true
+  keep: false # do not keep CRDs on chart uninstall to stop Terraform from freezing
+
 configs:
   params:
     server.insecure: "true" # Disable ArgoCD's TLS management because Traefik is handling TLS
-  rbac:
-    policy.default: role:admin
-    policy.csv: |
-      g, admin, role:admin
 
 server:
   service:

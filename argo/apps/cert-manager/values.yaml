@@ -1,2 +1,3 @@
 crds:
   enabled: true
+  keep: false # Uninstall on helm chart deletion to prevent Terraform freeze

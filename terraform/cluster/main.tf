@@ -51,11 +51,11 @@ resource "google_compute_subnetwork" "zhf_subnetwork" {
 resource "google_container_cluster" "zhf_cluster" {
   name = var.cluster_name
 
-  location                 = var.region
+  location                 = var.zone # SINGLE ZONE DEPLOYMENT
   
   remove_default_node_pool = true
 
-  initial_node_count = 1
+  initial_node_count = 2
 
   enable_l4_ilb_subsetting = true
 
@@ -80,15 +80,28 @@ resource "google_container_cluster" "zhf_cluster" {
 resource "google_container_node_pool" "zhf_node_pool" {
   name       = "zhf-node-pool"
   cluster    = google_container_cluster.zhf_cluster.name
-  location   = var.region
+  location   = var.zone
 
-  node_count = 1
+  autoscaling {
+    min_node_count = 2
+    max_node_count = 3
+  }
 
   node_config {
     machine_type = "e2-standard-2"
     oauth_scopes = [
       "https://www.googleapis.com/auth/cloud-platform",
     ]
+  }
+
+  management {
+    auto_repair  = true
+    auto_upgrade = true
+  }
+
+  upgrade_settings {
+    max_surge       = 1
+    max_unavailable = 0
   }
 }
 

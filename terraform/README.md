@@ -1,5 +1,12 @@
 # Terraform to provision app on GKE
 
-These Terraform files are purely for managing the GKE infrastructure. All application and Helm Chart provisioning will be handled by GitOps.
+## Cluster 
 
-The tfstate file is stored remotely in a GCP bucket. 
+- Bootstraps the cluster infrastructure components
+- Some helm packages and CRDs are installed here as they are prerequisites for the workloads provisioning
+
+## Workloads
+
+- Provisions cluster admin role binding for GCP service account
+- Creates kubernetes secret objects
+- Installs ArgoCD "App of Apps"
