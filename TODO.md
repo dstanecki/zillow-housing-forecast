@@ -1,6 +1,7 @@
 # TODO
 
 ### High 
+- Add SMTP action to GKE deploy pipeline
 - Monitor uptime and start collecting uptime metrics with a goal target (e.g. 4 nines)
 - Think about when zhf can become official. Who is the target, what do they need, maybe provide a free tier and give the paid tier unlimited queries? 
 	- Does Flask support oauth and payments?
