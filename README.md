@@ -2,13 +2,22 @@
 
 An AI-powered, containerized Python Flask web application that predicts the estimated 1-year percent change in home values for any given ZIP code in the U.S.
 
-## Live Demo Link
+## Live Demo
+
 https://zhf.danielstanecki.com
 
+---
 
-| ![Front End](/images/frontend.png) |
-|:--:| 
-| *Front end* |
+## 📚 Table of Contents
+
+- [Overview](#-overview)
+- [Tech Stack & Architecture](#-tech-stack--architecture)
+  - [Components](#-components)
+- [Disaster Recovery](#disaster-recovery-automated-failover-to-google-kubernetes-engine)
+- [Service Level Indicators](#service-level-indicators)
+- [Required Kubernetes Secrets](#required-kubernetes-secrets)
+- [Contributing](#contributing)
+- [License](#license)
 
 ## 🔍 Overview
 
@@ -16,7 +25,11 @@ This project leverages [Zillow’s housing data](https://www.zillow.com/research
 
 Beyond traditional forecasting, the app integrates **AI with live web search grounding** to explain the factors influencing each prediction.
 
----
+This app runs in a self-hosted Kubernetes homelab (Raspberry Pi cluster) with automated failover to Google Kubernetes Engine (GKE) for disaster recovery.
+
+| ![Front End](/images/frontend.png) |
+|:--:| 
+| *Front end* |
 
 ## 🧰 Tech Stack & Architecture
 
@@ -25,7 +38,7 @@ This application is fully containerized and designed for **scalability and high 
 ### 📦 Components
 
 - **Frontend**: Python Flask web app (multi-arch Docker container)
-- **Backend**: MariaDB (stateless, horizontally scalable with optional replication)
+- **Backend**: MariaDB
 - **Highly Available Deployment**: Kubernetes + ArgoCD + Helm
 - **AI Integration**: Azure OpenAI + Bing Web Search (real-time grounding for explanatory summaries)
 - **Caching & L7 Rate Limiting**: Redis
@@ -33,7 +46,6 @@ This application is fully containerized and designed for **scalability and high 
 - **TLS Management**: cert-manager + Let’s Encrypt
 - **Observability**: Prometheus + Grafana
 - **CI/CD**: GitHub Actions pulls new Zillow dataset on the 17th of every month and rebuilds my db container image
-
 
 | ![Architectural Diagram](/images/k8s-ingress-letsencrypt.drawio.png) |
 |:--:| 
@@ -47,7 +59,7 @@ This application has fully automated disaster recovery in case scheduled health 
 |:--:| 
 | *Disaster recovery workflow from homelab to GKE* |
 
-## Service Level Indicator Monitoring
+## Service Level Indicators
 
 Uses [Upptime](https://upptime.js.org/) for external uptime monitoring. See live monitoring here (beginning from August 7th, 2025): https://www.danielstanecki.com/zhf-upptime/
 
@@ -55,9 +67,9 @@ Uses [Upptime](https://upptime.js.org/) for external uptime monitoring. See live
 |:--:| 
 | *Service Level Indicator* |
 
-Through my disaster recovery solutions and by testing changes in my staging env first, I hope to keep my uptime above 99.99%.
+Through disaster recovery and pre-deployment testing in staging, I aim to maintain **>99.99% uptime** for this app.
 
-### Kubernetes Secrets
+## Required Kubernetes Secrets
 
 - db-password (password for mariadb user)
 - azure-ai-openapi-key (from Azure AI Foundry portal)
@@ -67,7 +79,7 @@ Through my disaster recovery solutions and by testing changes in my staging env 
 
 ## Contributing
 
-Due to the need for an individual AzureAI API Key, a recaptcha secret key, CloudFlare tunnel configuration, and external Helm charts, deploying on your local machine would require lengthy configuration.
+This project depends on a number of external services (AzureAI, Redis, Cloudflare, ReCAPTCHA, etc.), so local deployment requires some manual configuration.
 
 ## License
 
