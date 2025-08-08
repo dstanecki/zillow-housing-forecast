@@ -1,18 +1,16 @@
 # TODO
 
 ### High 
-- Add SMTP action to GKE deploy pipeline
-- Monitor uptime and start collecting uptime metrics with a goal target (e.g. 4 nines)
+- Establish and document in detail the most important metrics to monitor. I need to do internal monitoring in addition to external monitoring that I'm currently doing. 
+	- Set up node export metrics and pod/container metrics with Prometheus 
+		- Set up Prometheus alerts based on node RAM
 - Think about when zhf can become official. Who is the target, what do they need, maybe provide a free tier and give the paid tier unlimited queries? 
-	- Does Flask support oauth and payments?
-- Solution for aligning Redis cache with revolving data. (Actions workflow needs to trigger a redis clear on success)
 - Address revolving CSV data (currently Actions pipeline curls csv and builds zhf-mariadb:latest once per month, but I would like to also automate k8s rollout)
     - Add a zhf-mariadb:v1.x.x build stage for prod
     - ArgoCD to handle automated rollout for dev, and manual approval for prod
-- Set up Prometheus alerts based on node RAM and set in place a protocol to solve
-- Set up node export metrics and pod/container metrics with Prometheus 
 
 ### Medium
+- Solution for aligning Redis cache with revolving data. (Actions workflow needs to trigger a redis clear on success)
 - Venture into statefulness (e.g., add a dark mode switch and store that in user's browser cache)
 - Monitor SD card health to have warning signs before failure
 - Secure dashboards (Prom + Grafana security concerns)
