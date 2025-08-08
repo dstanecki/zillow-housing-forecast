@@ -63,11 +63,11 @@ This application has fully automated disaster recovery in case scheduled health 
 
 Uses [Upptime](https://upptime.js.org/) for external uptime monitoring. See live monitoring here (beginning from August 7th, 2025): https://www.danielstanecki.com/zhf-upptime/
 
+Through disaster recovery and pre-deployment testing in staging, I aim to maintain **>99.99% uptime** for this app.
+
 | ![upptime.png](/images/upptime.png) |
 |:--:| 
 | *Service Level Indicator* |
-
-Through disaster recovery and pre-deployment testing in staging, I aim to maintain **>99.99% uptime** for this app.
 
 ## Required Kubernetes Secrets
 
