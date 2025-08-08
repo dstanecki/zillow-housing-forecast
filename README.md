@@ -26,7 +26,7 @@ This application is fully containerized and designed for **scalability and high 
 
 - **Frontend**: Python Flask web app (multi-arch Docker container)
 - **Backend**: MariaDB (stateless, horizontally scalable with optional replication)
-- **Highly Available Deployment**: Kubernetes + Helm
+- **Highly Available Deployment**: Kubernetes + ArgoCD + Helm
 - **AI Integration**: Azure OpenAI + Bing Web Search (real-time grounding for explanatory summaries)
 - **Caching & L7 Rate Limiting**: Redis
 - **Reverse Proxy**: Traefik (via Cloudflare Tunnel)
@@ -39,25 +39,31 @@ This application is fully containerized and designed for **scalability and high 
 |:--:| 
 | *Network Architecture of Traefik Reverse Proxy + CloudFlare Tunnel + cert-manager* |
 
-### Kubernetes Secrets
+## Disaster Recovery: Automated Failover to Google Kubernetes Engine
 
-To run this app, several secrets are passed as env variables:
+This application has fully automated disaster recovery in case scheduled health checks fail. 
+
+| ![disaster_recovery.drawio.png](/images/disaster_recovery.drawio.png) |
+|:--:| 
+| *Disaster recovery workflow from homelab to GKE* |
+
+## Service Level Indicator Monitoring
+
+Uses [Upptime](https://upptime.js.org/) for external uptime monitoring. See live monitoring here (beginning from August 7th, 2025): https://www.danielstanecki.com/zhf-upptime/
+
+| ![upptime.png](/images/upptime.png) |
+|:--:| 
+| *Service Level Indicator* |
+
+Through my disaster recovery solutions and by testing changes in my staging env first, I hope to keep my uptime above 99.99%.
+
+### Kubernetes Secrets
 
 - db-password (password for mariadb user)
 - azure-ai-openapi-key (from Azure AI Foundry portal)
 - redis-password (redis password, create this manually instead of using the default generated one. Avoids password regeneration if you ever reinstall redis)
 - recaptcha-secret-key (created when you add your domain to Google reCAPTCHA)
 - tunnel-token (passed to cloudflared agent deployment)
-
-### Other Helm Charts Required
-
-| NAME         | NAMESPACE   | CHART                           | APP VERSION |
-|--------------|-------------|----------------------------------|-------------|
-| my-redis     | prod        | redis-21.2.6                     | 8.0.2       |
-| prometheus   | monitoring  | kube-prometheus-stack-75.7.0     | v0.83.0     |
-| traefik      | kube-system | traefik-27.0.201+up27.0.2        | v2.11.10    |
-| traefik-crd  | kube-system | traefik-crd-27.0.201+up27.0.2    | v2.11.10    |
-| cert-manager | cert-manager| cert-manager                     | v1.18.0     |
 
 ## Contributing
 
