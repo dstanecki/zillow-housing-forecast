@@ -12,7 +12,7 @@ jobs:
       - name: Ping endpoint
         id: ping
         run: |
-          response=$(curl -s -o /dev/null -w "%{http_code}" https://zhf-dev.danielstanecki.com/ready)
+          response=$(curl -s -o /dev/null -w "%{http_code}" https://zhf.danielstanecki.com/ready)
           echo "HTTP status: $response"
           echo "response_code=$response" >> $GITHUB_OUTPUT
 
