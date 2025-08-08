@@ -53,7 +53,7 @@ This application is fully containerized and designed for **scalability and high 
 
 ## Disaster Recovery: Automated Failover to Google Kubernetes Engine
 
-This application has fully automated disaster recovery in case scheduled health checks fail. 
+This application has fully automated disaster recovery in case scheduled health checks fail. A GitHub Actions workflow pings an HTTP endpoint in the cluster’s app every 5 minutes and triggers the deploy-to-GKE pipeline after 3 consecutive failures. The GKE pipeline deploys the app to cloud in a zero-touch fashion and redirects the DNS record.
 
 | ![disaster_recovery.drawio.png](/images/disaster_recovery.drawio.png) |
 |:--:| 
