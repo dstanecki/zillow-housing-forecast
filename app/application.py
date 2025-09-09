@@ -9,7 +9,8 @@ from openai import AzureOpenAI
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 
-# Azure OpenAI client
+# Initialize Azure OpenAI client for generating regional housing explanations
+# The endpoint and API key are read from environment variables for security
 client = AzureOpenAI(
     api_version="2024-12-01-preview",
     azure_endpoint="https://zhf-agent-resource.cognitiveservices.azure.com/openai/deployments/gpt-4.1-mini/chat/completions?api-version=2025-01-01-preview",
@@ -17,35 +18,39 @@ client = AzureOpenAI(
 )
 
 app = Flask(__name__)
+# Session key to sign cookies (must be kept secret in production)
 app.secret_key = os.getenv("SECRET_KEY", "supersecretkey")
 
-# Prometheus metrics
-metrics = PrometheusMetrics(app)
+# Configure Prometheus metrics to expose app performance and usage datametrics = PrometheusMetrics(app)
 metrics.info('app_info', 'Application info', version='1.0.3')
 forecast_requests_total = Counter('forecast_request_total', 'Total number of forecast ZIP code queries')
 
-# reCAPTCHA
+# reCAPTCHA credentials
 RECAPTCHA_SECRET_KEY = os.getenv("RECAPTCHA_SECRET_KEY")
 RECAPTCHA_SITE_KEY = os.getenv("RECAPTCHA_SITE_KEY")
 
-# Redis Cache credentials
+# Redis credentials for caching AI responses and storing rate-limiter data
 REDIS_PASSWORD = os.getenv("REDIS_PASSWORD")
 REDIS_HOST = os.getenv("REDIS_HOST")
 REDIS_PORT = os.getenv("REDIS_PORT", "6379")
-
 REDIS_URI = f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}"
 
-# Flask rate limiter (per-client, Layer 7)
+# Rate limiter configured to use Redis storage (Layer 7 protection)
+# Limits requests per client IP to prevent abuse
 limiter = Limiter(
     key_func=get_remote_address,
     storage_uri=REDIS_URI,
     app=app,
 )
 
-# Connect to Redis to cache AI responses
+# Redis client for caching AI explanations to reduce cost/latency
 redis_client = redis.StrictRedis.from_url(REDIS_URI, decode_responses=True)
 
 def verify_recaptcha(token):
+    """
+    Verify a reCAPTCHA token with Google’s API.
+    Returns True if valid, False otherwise.
+    """
     payload = {
         'secret': RECAPTCHA_SECRET_KEY,
         'response': token
@@ -54,15 +59,26 @@ def verify_recaptcha(token):
         r = requests.post("https://www.google.com/recaptcha/api/siteverify", data=payload)
         return r.json().get("success", False)
     except:
+        # Fail closed if verification request fails
         return False
 
 @app.route('/')
 def index():
+    """
+    Render main page with previous results (if any) and reCAPTCHA key.
+    """
     return render_template("index.html", rows=session.get('results', []), recaptcha_site_key=RECAPTCHA_SITE_KEY)
 
 @app.route('/process', methods=['GET', 'POST'])
-@limiter.limit("6 per minute")
+@limiter.limit("6 per minute") # enforce per-IP request rate limiting
 def process():
+    """
+    Handle user ZIP code queries:
+    - Validate reCAPTCHA for new users
+    - Fetch forecast data from MariaDB
+    - Generate/cache AI explanation via Azure OpenAI
+    - Store results in session for persistence across requests
+    """
     forecast_requests_total.inc()
 
     conn = None
@@ -70,12 +86,12 @@ def process():
     try:
         zip_code = request.form['zip']
         
-        # Enforce session cap
+        # Enforce per-session query cap (prevents excessive storage in cookies)
         if 'results' in session and len(session['results']) >= 10:
             error = "Result limit reached. Please clear results before submitting more queries."
             return render_template("index.html", rows=session['results'], error=error, recaptcha_site_key=RECAPTCHA_SITE_KEY)
 
-        # First-time users must solve reCAPTCHA
+        # Require CAPTCHA for first-time users to mitigate bot submissions
         if not session.get('captcha_passed'):
             token = request.form.get('g-recaptcha-response')
             if not verify_recaptcha(token):
@@ -84,7 +100,7 @@ def process():
             session.permanent = False  # expires on browser close
             session['captcha_passed'] = True
 
-        # Connect to MariaDB
+        # Connect to MariaDB and query forecasts for given ZIP code
         conn = mariadb.connect(
             host=os.getenv("DB_HOST", "mariadb"),
             port=3306,
@@ -100,10 +116,11 @@ def process():
         rows = cur.fetchall()
 
         if not rows:
+            # No forecast data found for the provided ZIP
             error = "No data found for the provided ZIP code."
             return render_template("index.html", rows=session.get('results', []), error=error, recaptcha_site_key=RECAPTCHA_SITE_KEY)
 
-        # Extract values
+        # Extract database fields into named variables
         forecast = rows[0][1]
         state = rows[0][2]
         city = rows[0][3]
@@ -111,21 +128,21 @@ def process():
         county = rows[0][5]
         baseDate = rows[0][6]
 
-        # Prompt for Azure AI
+        # Construct prompt for Azure AI model
         user_prompt = (
             f"Home values in ZIP code {zip_code} are forecasted to change by {forecast}% from {baseDate} to one year later. "
             f"This area includes {city}, {state}, within the {metro} metro and {county}. "
             f"In a short paragraph, give a concise explanation (2–3 key reasons) why this change is expected, based on local housing or economic trends specific to this region."
         )
 
-        # Check to see if AI explanation is in Redis Cache already
+        # Check Redis cache for previously generated explanation
         cache_key = f"explanation:{zip_code}"
         cached_explanation = redis_client.get(cache_key)
 
         if cached_explanation:
             explanation = cached_explanation
         else:
-            # Call Azure OpenAI
+            # Call Azure OpenAI to generate explanation if not cached
             try:
                 response = client.chat.completions.create(
                     model="o4-mini",
@@ -140,12 +157,13 @@ def process():
                     temperature=0.7
                 )
                 explanation = response.choices[0].message.content
-                # Cache explanation for 30 days
+                # Cache AI explanation for 30 days (2592000 seconds)
                 redis_client.setex(cache_key, 2592000, explanation)     
             except Exception as e:
+                # Gracefully handle AI errors by embedding error text
                 explanation = f"(AI explanation unavailable: {str(e)})"
 
-        # Store result
+        # Store result at the top of session history
         result_rows = [(zip_code, forecast, explanation)]
         if 'results' not in session:
             session['results'] = []
@@ -163,19 +181,30 @@ def process():
 
 @app.route('/clear', methods=['GET'])
 def clear():
+    """
+    Clear session results and captcha state (reset workflow).
+    """
     session.pop('results', None)
     session.pop('captcha_passed', None)
     return render_template("index.html", rows=[], recaptcha_site_key=RECAPTCHA_SITE_KEY)
 
 @app.route('/ready')
 def readiness_probe():
+    """
+    Readiness probe for Kubernetes/health checks.
+    Returns HTTP 200 when app is up.
+    """
     return 'OK', 200
 
 @app.errorhandler(429)
 def ratelimit_handler(e):
+    """
+    Custom handler for rate-limit violations (HTTP 429).
+    Returns a friendly error page instead of default response.
+    """
     return render_template("index.html", rows=session.get('results', []), error="Rate limit exceeded. Please wait a moment and try again."), 429
 
-# Metrics
+# Register a Prometheus counter that tracks requests per path
 metrics.register_default(
     metrics.counter(
         'by_path_counter', 'Request count by request paths',
@@ -184,5 +213,6 @@ metrics.register_default(
 )
 
 if __name__ == "__main__":
+    # Run in production mode (debug off)
     app.debug = False
     app.run(host="0.0.0.0", port=5000)
