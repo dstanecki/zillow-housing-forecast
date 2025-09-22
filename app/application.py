@@ -1,4 +1,4 @@
-from flask import Flask, session, render_template, request
+from flask import Flask, session, render_template, request, redirect, url_for, g
 import mariadb
 import os
 import requests
@@ -8,6 +8,8 @@ from prometheus_client import Counter
 from openai import AzureOpenAI
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
+from authlib.integrations.flask_client import OAuth
+from functools import wraps
 
 # Initialize Azure OpenAI client for generating regional housing explanations
 # The endpoint and API key are read from environment variables for security
@@ -21,7 +23,18 @@ app = Flask(__name__)
 # Session key to sign cookies (must be kept secret in production)
 app.secret_key = os.getenv("SECRET_KEY", "supersecretkey")
 
-# Configure Prometheus metrics to expose app performance and usage datametrics = PrometheusMetrics(app)
+# OAuth credentials
+#oauth = OAuth(app)
+#google = oauth.register(
+ #   name="google",
+  #  client_id=os.getenv("GOOGLE_CLIENT_ID"),
+   # client_secret=os.getenv("GOOGLE_CLIENT_SECRET"),
+   # server_metadata_url="https://accounts.google.com/.#well-known/openid-configuration",
+   # client_kwargs={"scope": "openid email profile"},
+#)
+
+# Configure Prometheus metrics
+metrics = PrometheusMetrics(app)
 metrics.info('app_info', 'Application info', version='1.0.3')
 forecast_requests_total = Counter('forecast_request_total', 'Total number of forecast ZIP code queries')
 
@@ -46,6 +59,34 @@ limiter = Limiter(
 # Redis client for caching AI explanations to reduce cost/latency
 redis_client = redis.StrictRedis.from_url(REDIS_URI, decode_responses=True)
 
+@app.before_request
+def load_user():
+    g.user = session.get("user")
+
+@app.route("/login")
+def login():
+    redirect_uri = url_for("auth_callback", _external=True)
+    return google.authorize_redirect(redirect_uri)
+
+@app.route("/login/callback")
+def auth_callback():
+    token = google.authorize_access_token()
+    userinfo = google.parse_id_token(token)  # verified OIDC claims
+    # store the minimal fields you need
+    session["user"] = {
+        "sub": userinfo.get("sub"),
+        "email": userinfo.get("email"),
+        "name": userinfo.get("name"),
+        "picture": userinfo.get("picture"),
+    }
+    # optional: set session.permanent, etc.
+    return redirect(url_for("index"))
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect(url_for("index"))
+    
 def verify_recaptcha(token):
     """
     Verify a reCAPTCHA token with Google’s API.
