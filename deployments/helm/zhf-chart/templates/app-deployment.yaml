@@ -88,7 +88,7 @@ spec:
                   name: google-client-secret
                   key: GOOGLE_CLIENT_SECRET
             - name: OAUTH_REDIRECT_URI
-              value: {{ if eq .Values.environment "prod" }}"https://zhf.danielstanecki.com"{{ else }}"https://zhf-dev.danielstanecki.com"{{ end }}
+              value: {{ if eq .Values.environment "prod" }}"https://zhf.danielstanecki.com/login/callback"{{ else }}"https://zhf-dev.danielstanecki.com/login/callback"{{ end }}
             - name: SUBSCRIPTION_KEY
               valueFrom:
                 secretKeyRef: 
