@@ -76,6 +76,7 @@ Through disaster recovery and pre-deployment testing in staging, I aim to mainta
 - redis-password (redis password, create this manually instead of using the default generated one. Avoids password regeneration if you ever reinstall redis)
 - recaptcha-secret-key (created when you add your domain to Google reCAPTCHA)
 - tunnel-token (passed to cloudflared agent deployment)
+- google-client-secret (for OAuth)
 
 ## Contributing
 
