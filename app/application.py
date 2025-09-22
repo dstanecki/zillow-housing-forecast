@@ -24,14 +24,14 @@ app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", "supersecretkey")
 
 # OAuth credentials
-#oauth = OAuth(app)
-#google = oauth.register(
- #   name="google",
-  #  client_id=os.getenv("GOOGLE_CLIENT_ID"),
-   # client_secret=os.getenv("GOOGLE_CLIENT_SECRET"),
-   # server_metadata_url="https://accounts.google.com/.#well-known/openid-configuration",
-   # client_kwargs={"scope": "openid email profile"},
-#)
+oauth = OAuth(app)
+google = oauth.register(
+    name="google",
+    client_id=os.getenv("GOOGLE_CLIENT_ID"),
+    client_secret=os.getenv("GOOGLE_CLIENT_SECRET"),
+    server_metadata_url="https://accounts.google.com/.#well-known/openid-configuration",
+    client_kwargs={"scope": "openid email profile"},
+)
 
 # Configure Prometheus metrics
 metrics = PrometheusMetrics(app)

@@ -10,6 +10,15 @@
   <header>
     <h1>Zillow Home Value Forecast</h1>
     <p class="subtitle">Get 1-year seasonally adjusted and smoothed forecasts based on ZIP codes.</p>
+    
+    <nav class="user-nav">
+      {% if g.user %}
+        <span class="welcome">Hi, {{ g.user.name or g.user.email }}</span>
+        <a href="{{ url_for('logout') }}" class="login-link">Logout</a>
+      {% else %}
+        <a href="{{ url_for('login') }}" class="login-link">Login with Google</a>
+      {% endif %}
+    </nav>
   </header>
 
   <main class="container">
