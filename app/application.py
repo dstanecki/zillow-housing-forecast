@@ -9,7 +9,7 @@ from openai import AzureOpenAI
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from authlib.integrations.flask_client import OAuth
-from functools import wraps
+from authlib.common.security import generate_token
 
 # Initialize Azure OpenAI client for generating regional housing explanations
 # The endpoint and API key are read from environment variables for security
@@ -65,14 +65,17 @@ def load_user():
 
 @app.route("/login")
 def login():
-    REDIRECT_URI = "https://zhf-dev.danielstanecki.com/login/callback"
+    nonce = generate_token(24)
+    session["oidc_nonce"] = nonce
+    REDIRECT_URI = os.getenv("OAUTH_REDIRECT_URI", "https://zhf-dev.danielstanecki.com/login/callback")
     google = oauth.create_client('google')
-    return google.authorize_redirect(REDIRECT_URI)
+    return google.authorize_redirect(REDIRECT_URI, nonce=nonce)
 
 @app.route("/login/callback")
 def auth_callback():
     token = google.authorize_access_token()
-    userinfo = google.parse_id_token(token)  # verified OIDC claims
+    nonce = session.pop("oidc_nonce", None)
+    userinfo = google.parse_id_token(token, nonce=nonce)  # verified OIDC claims
     # store the minimal fields you need
     session["user"] = {
         "sub": userinfo.get("sub"),
