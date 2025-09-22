@@ -13,6 +13,7 @@
     
     <nav class="user-nav">
       {% if g.user %}
+        <img src="{{ g.user.picture }}" alt="Profile" class="profile-pic">
         <span class="welcome">Hi, {{ g.user.name or g.user.email }}</span>
         <a href="{{ url_for('logout') }}" class="login-link">Logout</a>
       {% else %}

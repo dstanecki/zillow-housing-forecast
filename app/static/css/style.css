@@ -6,6 +6,11 @@
   padding: 0;
 }
 
+:focus-visible {
+  outline: 2px solid #90caf9;
+  outline-offset: 2px;
+}
+
 body {
   font-family: 'Inter', sans-serif;
   background-color: #f5f7fa;
@@ -17,6 +22,7 @@ body {
 }
 
 header {
+  position: relative;               /* allow top-right nav positioning */
   background-color: #1a237e;
   color: white;
   padding: 60px 20px;
@@ -36,6 +42,54 @@ h1 {
   margin-top: 10px;
 }
 
+/* --- Top-right user nav --- */
+.user-nav {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.user-nav .login-link,
+.user-nav a.login-link {
+  color: #fff;
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.25);
+  padding: 8px 12px;
+  border-radius: 999px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.user-nav .login-link:hover {
+  background: rgba(255,255,255,0.25);
+  border-color: rgba(255,255,255,0.35);
+}
+
+.welcome {
+  color: #e0e0e0;
+  font-size: 0.95rem;
+  white-space: nowrap;
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* avatar */
+.profile-pic {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: inline-block;
+  border: 2px solid rgba(255,255,255,0.6);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+}
+
+/* container */
 .container {
   max-width: 700px;
   margin: 40px auto;
@@ -143,14 +197,8 @@ input[type="submit"]:hover {
 
 /* Fade-in animation */
 @keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 .fade-in-table .forecast tbody tr {
@@ -197,6 +245,11 @@ footer {
   h1 {
     font-size: 2rem;
   }
+
+  /* keep header centered and declutter top-right */
+  .welcome { display: none; }
+  .user-nav { top: 12px; right: 12px; }
+  .profile-pic { width: 32px; height: 32px; }
 }
 
 /* Desktop polish */

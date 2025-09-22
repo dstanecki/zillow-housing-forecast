@@ -67,7 +67,7 @@ def load_user():
 def login():
     nonce = generate_token(24)
     session["oidc_nonce"] = nonce
-    REDIRECT_URI = os.getenv("OAUTH_REDIRECT_URI", "https://zhf-dev.danielstanecki.com/login/callback")
+    REDIRECT_URI = os.getenv("OAUTH_REDIRECT_URI", "https://zhf.danielstanecki.com/login/callback")
     google = oauth.create_client('google')
     return google.authorize_redirect(REDIRECT_URI, nonce=nonce)
 
