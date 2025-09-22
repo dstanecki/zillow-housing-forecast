@@ -85,7 +85,7 @@ spec:
                 secretKeyRef:
                   name: google-client-id
                   key: GOOGLE_CLIENT_ID
-            - name: GOOGLE_CLIENT_SECREt
+            - name: GOOGLE_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
                   name: google-client-secret
