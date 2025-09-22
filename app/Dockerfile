@@ -1,46 +1,26 @@
-# Use the official Python image from Docker Hub
-FROM python:3.8-slim
+FROM python:3.11-slim
 
-# Set the working directory inside the container
 WORKDIR /app
 
-# Install build dependencies and MariaDB dependencies
-RUN apt-get update && apt-get install -y \
+# Install system deps only if you need them
+RUN apt-get update && apt-get install -y --no-install-recommends \
     gcc \
-    build-essential \
-    mariadb-client \
     libmariadb-dev \
+    mariadb-client \
     && rm -rf /var/lib/apt/lists/*
 
 # Upgrade pip
 RUN pip install --upgrade pip
 
-# Install Prometheus exporter 
-RUN pip install prometheus_flask_exporter
-
-# Install Azure OpenAI SDK
-RUN pip install openai
-
-# Install requests 
-RUN pip install requests 
-
-# Install flask-limiter 
-RUN pip install flask-limiter[redis]
-
-# Install redis
-RUN pip install redis
-
-# Copy the requirements file into the container
+# Copy requirements first (better cache)
 COPY requirements.txt .
 
-# Install the Python dependencies
+# Install Python deps
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the rest of the application code into the container
+# Copy app
 COPY . .
 
-# Expose the port that the Flask app runs on
 EXPOSE 5000
 
-# Command to run the Flask application
 CMD ["python", "application.py"]
