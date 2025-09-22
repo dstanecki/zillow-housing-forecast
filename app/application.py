@@ -66,6 +66,7 @@ def load_user():
 @app.route("/login")
 def login():
     redirect_uri = url_for("auth_callback", _external=True)
+    google = oauth.create_client('google')
     return google.authorize_redirect(redirect_uri)
 
 @app.route("/login/callback")
