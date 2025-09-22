@@ -65,9 +65,9 @@ def load_user():
 
 @app.route("/login")
 def login():
-    redirect_uri = url_for("auth_callback", _external=True)
+    REDIRECT_URI = "https://zhf-dev.danielstanecki.com/login/callback"
     google = oauth.create_client('google')
-    return google.authorize_redirect(redirect_uri)
+    return google.authorize_redirect(REDIRECT_URI)
 
 @app.route("/login/callback")
 def auth_callback():
