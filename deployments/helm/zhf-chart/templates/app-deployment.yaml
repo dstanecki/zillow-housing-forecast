@@ -81,15 +81,14 @@ spec:
                   name: recaptcha-secret-key
                   key: RECAPTCHA_SECRET_KEY
             - name: GOOGLE_CLIENT_ID
-              valueFrom:
-                secretKeyRef:
-                  name: google-client-id
-                  key: GOOGLE_CLIENT_ID
+              value: "538912190613-aikinleisitb90o6kt7v9ovlpvo5k5vm.apps.googleusercontent.com"
             - name: GOOGLE_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
                   name: google-client-secret
                   key: GOOGLE_CLIENT_SECRET
+            - name: OAUTH_REDIRECT_URI
+              value: {{ if eq .Values.environment "prod" }}"https://zhf.danielstanecki.com"{{ else }}"https://zhf-dev.danielstanecki.com"{{ end }}
             - name: SUBSCRIPTION_KEY
               valueFrom:
                 secretKeyRef: 
