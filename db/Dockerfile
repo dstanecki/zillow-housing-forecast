@@ -9,4 +9,6 @@ RUN chmod +x /usr/local/bin/healthcheck.sh
 
 COPY ./data.csv /docker-entrypoint-initdb.d/
 
+COPY ./zip_centroids.csv /docker-entrypoint-initdb.d/
+
 COPY ./import-data.sql /docker-entrypoint-initdb.d/
