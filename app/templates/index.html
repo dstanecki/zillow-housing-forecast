@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
   <title>Zillow Home Value Forecast</title>
@@ -10,12 +10,18 @@
   <header>
     <h1>Zillow Home Value Forecast</h1>
     <p class="subtitle">Get 1-year seasonally adjusted and smoothed forecasts based on ZIP codes.</p>
-    
+
     <nav class="user-nav">
       {% if g.user %}
-        <img src="{{ g.user.picture }}" alt="Profile" class="profile-pic">
-        <span class="welcome">Hi, {{ g.user.name or g.user.email }}</span>
-        <a href="{{ url_for('logout') }}" class="login-link">Logout</a>
+        <div class="profile-menu" id="profileMenu">
+          <button class="profile-trigger" aria-haspopup="menu" aria-expanded="false" aria-label="Open profile menu">
+            <img src="{{ g.user.picture }}" alt="Profile" class="profile-pic">
+          </button>
+          <ul class="profile-dropdown" role="menu" aria-label="Profile menu">
+            <li class="profile-name">{{ g.user.name or g.user.email }}</li>
+            <li><a href="{{ url_for('logout') }}">Logout</a></li>
+          </ul>
+        </div>
       {% else %}
         <a href="{{ url_for('login') }}" class="login-link">Login with Google</a>
       {% endif %}
@@ -26,12 +32,11 @@
     <form action="/process" method="post" class="form-section">
       <div class="form-group">
         <label for="zip">Enter your ZIP code:</label>
-        <input type="text" id="zip" name="zip" placeholder="e.g., 90210" required />
+        <input type="text" id="zip" name="zip" placeholder="e.g., 90210" required/>
       </div>
 
       {% if not session.captcha_passed %}
-        <!-- Google reCAPTCHA widget -->
-        <div class="recaptcha-wrapper">  
+        <div class="recaptcha-wrapper">
           <div class="g-recaptcha" data-sitekey="{{ recaptcha_site_key }}"></div>
         </div>
       {% endif %}
@@ -74,7 +79,10 @@
     <p>&copy; Zillow Home Forecast. Not affiliated with Zillow.</p>
   </footer>
 
-  <!-- Google reCAPTCHA script -->
+  <!-- Google reCAPTCHA -->
   <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
+  <!-- Your dropdown logic lives here -->
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html>

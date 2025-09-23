@@ -1,15 +1,15 @@
-from flask import Flask, session, render_template, request, redirect, url_for, g
-import mariadb
+from flask import Flask, session, render_template, request, redirect, url_for, g # type: ignore
+import mariadb # type: ignore
 import os
 import requests
-import redis
-from prometheus_flask_exporter import PrometheusMetrics
-from prometheus_client import Counter
-from openai import AzureOpenAI
-from flask_limiter import Limiter
-from flask_limiter.util import get_remote_address
-from authlib.integrations.flask_client import OAuth
-from authlib.common.security import generate_token
+import redis # type: ignore
+from prometheus_flask_exporter import PrometheusMetrics # type: ignore
+from prometheus_client import Counter # type: ignore
+from openai import AzureOpenAI # type: ignore
+from flask_limiter import Limiter # type: ignore
+from flask_limiter.util import get_remote_address # type: ignore
+from authlib.integrations.flask_client import OAuth # type: ignore
+from authlib.common.security import generate_token # type: ignore
 
 # Initialize Azure OpenAI client for generating regional housing explanations
 # The endpoint and API key are read from environment variables for security
