@@ -114,6 +114,31 @@ def index():
     """
     return render_template("index.html", rows=session.get('results', []), recaptcha_site_key=RECAPTCHA_SITE_KEY)
 
+@app.route("/api/zip-heat")
+def zip_heat():
+    conn = mariadb.connect(
+        host=os.getenv("DB_HOST","mariadb"), port=3306,
+        user=os.getenv("DB_USER","root"),
+        password=os.getenv("DB_PASSWORD",""),
+        database=os.getenv("DB_NAME","ZillowHomeValueForecast")
+    )
+    cur = conn.cursor()
+    cur.execute("""
+        SELECT f.RegionName, f.YearForecast, c.lon, c.lat
+        FROM forecast f
+        JOIN zip_centroids c ON c.zip = f.RegionName
+        WHERE f.YearForecast IS NOT NULL
+    """)
+    features = []
+    for zip_code, val, lon, lat in cur.fetchall():
+        features.append({
+            "type":"Feature",
+            "geometry":{"type":"Point","coordinates":[float(lon), float(lat)]},
+            "properties":{"zip": zip_code, "value": float(val)}
+        })
+    cur.close(); conn.close()
+    return {"type":"FeatureCollection","features":features}
+
 @app.route('/process', methods=['GET', 'POST'])
 @limiter.limit("6 per minute") # enforce per-IP request rate limiting
 def process():

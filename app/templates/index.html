@@ -4,6 +4,8 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <!-- MapLibre GL -->
+  <link href="https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.css" rel="stylesheet"/>
   <title>Zillow Home Value Forecast</title>
 </head>
 <body>
@@ -27,7 +29,24 @@
       {% endif %}
     </nav>
   </header>
-
+  <!-- Full-width map -->
+  <section class="map-hero" aria-label="US ZIP Heatmap">
+    <div class="map-wrap">
+      <div id="map" role="region" aria-label="US ZIP heatmap"></div>
+      <div id="mapError" class="map-error" hidden>
+        Map failed to load. Please check your connection or try a different browser/device.
+      </div>
+      <div class="legend" aria-hidden="true">
+        <div class="legend-title">1-yr forecast (% change)</div>
+        <div class="legend-scale">
+          <span class="legend-min">−10</span>
+          <div class="legend-gradient"></div>
+          <span class="legend-max">+10</span>
+        </div>
+        <div class="legend-note">Point heatmap by ZIP centroid. Data: your DB (ZCTA≈ZIP).</div>
+      </div>
+    </div>
+  </section>
   <main class="container">
     <form action="/process" method="post" class="form-section">
       <div class="form-group">
@@ -81,8 +100,10 @@
 
   <!-- Google reCAPTCHA -->
   <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-
-  <!-- Your dropdown logic lives here -->
+  <!-- MapLibre GL -->
+  <script src="https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.js"></script>
+  <!-- App JS -->
   <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  <noscript>JavaScript is required to view the map.</noscript>
 </body>
 </html>

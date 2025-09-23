@@ -1,5 +1,8 @@
 # TODO
 
+### Mission
+Address the time-poorness of real estate agents by providing a centralized point of zip-level data insights. Stand out from the competition by focusing on this single niche and providing unparalleled ease of use. 
+
 ### High 
 - Implement tracing
 - Implement confidence band
@@ -26,3 +29,4 @@
 - Script to control RPi GPIO-4 fans
 - Longhorn (not required for my read-only database but will be good to experiment in the future)
 - Contribute to Kompose to fix the bug you found with volume mount
+
