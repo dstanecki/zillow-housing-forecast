@@ -5,6 +5,7 @@ openai
 requests
 flask-limiter[redis]
 redis
+Flask-Compress
 
 # Database driver
 mariadb

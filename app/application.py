@@ -1,4 +1,5 @@
 from flask import Flask, session, render_template, request, redirect, url_for, g, jsonify # type: ignore
+from flask_compress import Compress
 import mariadb # type: ignore
 import os
 import requests
@@ -20,6 +21,7 @@ client = AzureOpenAI(
 )
 
 app = Flask(__name__)
+Compress(app)
 # Session key to sign cookies (must be kept secret in production)
 app.secret_key = os.getenv("SECRET_KEY", "supersecretkey")
 
