@@ -21,7 +21,7 @@ metadata:
     io.kompose.service: mariadb
   name: {{ if eq .Values.environment "prod" }}mariadb-prod{{ else }}mariadb-dev{{ end }}
 spec:
-  serviceName: {{ if eq .Values.environment "prod" }}mariadb-prod{{ else }}mariadb-dev{{ end }}
+  serviceName: {{ if eq .Values.environment "prod" }}mariadb-prod-headless{{ else }}mariadb-dev-headless{{ end }}
   replicas: 1
   selector:
     matchLabels:
