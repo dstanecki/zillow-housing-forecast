@@ -1,4 +1,4 @@
-from flask import Flask, session, render_template, request, redirect, url_for, g # type: ignore
+from flask import Flask, session, render_template, request, redirect, url_for, g, jsonify # type: ignore
 import mariadb # type: ignore
 import os
 import requests
@@ -122,22 +122,48 @@ def zip_heat():
         password=os.getenv("DB_PASSWORD",""),
         database=os.getenv("DB_NAME","ZillowHomeValueForecast")
     )
-    cur = conn.cursor()
-    cur.execute("""
-        SELECT f.RegionName, f.YearForecast, c.lon, c.lat
-        FROM forecast f
-        JOIN zip_centroids c ON c.zip = f.RegionName
-        WHERE f.YearForecast IS NOT NULL
-    """)
-    features = []
-    for zip_code, val, lon, lat in cur.fetchall():
-        features.append({
-            "type":"Feature",
-            "geometry":{"type":"Point","coordinates":[float(lon), float(lat)]},
-            "properties":{"zip": zip_code, "value": float(val)}
-        })
-    cur.close(); conn.close()
-    return {"type":"FeatureCollection","features":features}
+    try:
+        cur = conn.cursor()
+        limit = request.args.get("limit", type=int)
+
+        sql = """
+            SELECT LPAD(f.RegionName,5,'0') AS zip,
+                   f.YearForecast, c.lon, c.lat,
+                   f.City, f.StateName, f.Metro, f.CountyName
+            FROM forecast f
+            LEFT JOIN zip_centroids c ON c.zip = LPAD(f.RegionName,5,'0')
+            WHERE f.YearForecast IS NOT NULL
+        """
+        if limit: sql += " LIMIT %s"
+        cur.execute(sql, (limit,) if limit else ())
+
+        MIN_LON, MAX_LON = -125.0, -66.9
+        MIN_LAT, MAX_LAT =  24.4,   49.5
+
+        feats = []
+        for zip_code, val, lon, lat, city, state, metro, county in cur:
+            if lon is None or lat is None or val is None:
+                continue
+            try:
+                flon = float(lon); flat = float(lat); fval = float(val)
+            except (TypeError, ValueError):
+                continue
+            if not (MIN_LON <= flon <= MAX_LON and MIN_LAT <= flat <= MAX_LAT):
+                continue
+            feats.append({
+                "type":"Feature",
+                "geometry":{"type":"Point","coordinates":[flon, flat]},
+                "properties":{
+                    "zip": zip_code, "value": fval,
+                    "city": city or "", "state": state or "",
+                    "metro": metro or "", "county": county or ""
+                }
+            })
+        return jsonify({"type":"FeatureCollection","features":feats})
+    finally:
+        try: cur.close()
+        except: pass
+        conn.close()
 
 @app.route('/process', methods=['GET', 'POST'])
 @limiter.limit("6 per minute") # enforce per-IP request rate limiting

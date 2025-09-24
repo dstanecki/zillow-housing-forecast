@@ -17,7 +17,14 @@ document.addEventListener("click", (e) => {
   }
 });
 
-// --- Map: US-only, true value heatmap (neg=blue, pos=red) + STATE LINES (internal borders) + point overlay ---
+// Safe HTML escape for popup text
+function esc(s){
+  return String(s ?? "").replace(/[&<>"'`=\/]/g, c => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;','/':'&#x2F;','`':'&#x60;','=':'&#x3D;'
+  }[c]));
+}
+
+// --- Map: US-only, heatmap (neg=blue, pos=orange) + internal state lines + point overlay ---
 (function initMap() {
   // Hide any accidental duplicate #map elements not in the full-bleed hero
   const duplicateMaps = Array.from(document.querySelectorAll("#map"))
@@ -28,7 +35,6 @@ document.addEventListener("click", (e) => {
   const errEl = document.getElementById("mapError");
   if (!mapEl || typeof maplibregl === "undefined") return;
 
-  // Contiguous US bounds
   const US_LOWER_48_BOUNDS = [[-125.0, 24.4], [-66.9, 49.5]];
 
   let map;
@@ -41,10 +47,7 @@ document.addEventListener("click", (e) => {
       maxBounds: US_LOWER_48_BOUNDS
     });
   } catch (e) {
-    if (errEl) {
-      errEl.hidden = false;
-      errEl.textContent = "Map failed to initialize.";
-    }
+    if (errEl) { errEl.hidden = false; errEl.textContent = "Map failed to initialize."; }
     return;
   }
 
@@ -55,10 +58,24 @@ document.addEventListener("click", (e) => {
     window.addEventListener("resize", () => map.resize());
     map.fitBounds(US_LOWER_48_BOUNDS, { padding: 20, duration: 0 });
 
-    // GeoJSON source (no clustering for a proper heatmap)
-    map.addSource("zip-points", { type: "geojson", data: "/api/zip-heat" });
+    // --- Fetch data first so failures are visible ---
+    let geo = null;
+    try {
+      const r = await fetch("/api/zip-heat", { cache: "no-store" });
+      if (!r.ok) throw new Error(`zip-heat ${r.status}`);
+      geo = await r.json();
+      if (!geo || !geo.features) throw new Error("Invalid GeoJSON");
+      console.log("zip-heat sample:", geo);
+    } catch (e) {
+      console.error(e);
+      if (errEl) { errEl.hidden = false; errEl.textContent = "Data load failed."; }
+      return;
+    }
 
-    // Heatmap for NEGATIVE values (weight by |value|, cool colors)
+    // Source (no clustering for heatmap)
+    map.addSource("zip-points", { type: "geojson", data: geo });
+
+    // Heatmap for NEGATIVE values
     map.addLayer({
       id: "heat-neg",
       type: "heatmap",
@@ -66,10 +83,7 @@ document.addEventListener("click", (e) => {
       filter: ["<", ["get", "value"], 0],
       maxzoom: 12,
       paint: {
-        "heatmap-weight": [
-          "interpolate", ["linear"], ["abs", ["get", "value"]],
-          0, 0, 10, 1
-        ],
+        "heatmap-weight": ["interpolate", ["linear"], ["abs", ["get", "value"]], 0, 0, 10, 1],
         "heatmap-intensity": ["interpolate", ["linear"], ["zoom"], 0, 0.8, 12, 2],
         "heatmap-color": [
           "interpolate", ["linear"], ["heatmap-density"],
@@ -84,7 +98,7 @@ document.addEventListener("click", (e) => {
       }
     });
 
-    // Heatmap for POSITIVE values (weight by value, warm colors)
+    // Heatmap for POSITIVE values
     map.addLayer({
       id: "heat-pos",
       type: "heatmap",
@@ -92,10 +106,7 @@ document.addEventListener("click", (e) => {
       filter: [">", ["get", "value"], 0],
       maxzoom: 12,
       paint: {
-        "heatmap-weight": [
-          "interpolate", ["linear"], ["get", "value"],
-          0, 0, 10, 1
-        ],
+        "heatmap-weight": ["interpolate", ["linear"], ["get", "value"], 0, 0, 10, 1],
         "heatmap-intensity": ["interpolate", ["linear"], ["zoom"], 0, 0.8, 12, 2],
         "heatmap-color": [
           "interpolate", ["linear"], ["heatmap-density"],
@@ -110,19 +121,13 @@ document.addEventListener("click", (e) => {
       }
     });
 
-    // --- Robust STATE LINES: use us-atlas TopoJSON and draw ONLY internal borders ---
-    // This avoids the "only outer outline" problem if your local file is a dissolved polygon.
-    await loadScriptOnce("https://unpkg.com/topojson-client@3"); // exposes window.topojson
+    // Internal state borders via us-atlas TopoJSON → GeoJSON mesh
+    await loadScriptOnce("https://unpkg.com/topojson-client@3");
     try {
       const topoRes = await fetch("https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json", { cache: "force-cache" });
       const topo = await topoRes.json();
-
-      // Mesh of INTERNAL borders: a!==b removes the outer coastline, leaving state-to-state lines only
       const internalMesh = window.topojson.mesh(topo, topo.objects.states, (a, b) => a !== b);
-
       map.addSource("state-borders", { type: "geojson", data: internalMesh });
-
-      // Draw state lines ABOVE heatmap but (later) BELOW circles
       map.addLayer({
         id: "state-borders-line",
         type: "line",
@@ -137,7 +142,7 @@ document.addEventListener("click", (e) => {
       console.warn("Failed to load/draw state borders mesh:", e);
     }
 
-    // Circle overlay at closer zoom for exact values (on top)
+    // Point overlay at closer zoom
     map.addLayer({
       id: "zip-circles",
       type: "circle",
@@ -159,23 +164,38 @@ document.addEventListener("click", (e) => {
       }
     });
 
-    // Ensure state lines render beneath circles (but above heat)
+    // Ensure state lines are beneath circles (but above heat)
     if (map.getLayer("state-borders-line")) {
       map.moveLayer("state-borders-line", "zip-circles");
     }
 
-    // Hover tooltip for points
+    // Tooltip
     const popup = new maplibregl.Popup({ closeButton: false, closeOnClick: false, offset: 8 });
+
+    map.on("mouseenter", "zip-circles", () => {
+      map.getCanvas().style.cursor = "pointer";
+    });
+
     map.on("mousemove", "zip-circles", (e) => {
       const f = e.features && e.features[0];
       if (!f) return;
-      const { zip, value } = f.properties;
       const [lng, lat] = f.geometry.coordinates;
-      popup.setLngLat([lng, lat])
-           .setHTML(`<div style="font-size:12px;"><strong>${zip}</strong><br/>Forecast: ${Number(value).toFixed(1)}%</div>`)
-           .addTo(map);
-      map.getCanvas().style.cursor = "pointer";
+      const { zip, value, city, state, metro, county } = f.properties;
+      popup
+        .setLngLat([lng, lat])
+        .setHTML(
+          `<div style="font-size:12px;line-height:1.35;">
+             <div>ZIP: <strong>${esc(zip)}</strong></div>
+             <div>City: <strong>${esc(city)}</strong></div>
+             <div>State: <strong>${esc(state)}</strong></div>
+             <div>Metro: <strong>${esc(metro)}</strong></div>
+             <div>County: <strong>${esc(county)}</strong></div>
+             <div>Forecast: <strong>${Number(value).toFixed(1)}%</strong></div>
+           </div>`
+        )
+        .addTo(map);
     });
+
     map.on("mouseleave", "zip-circles", () => {
       popup.remove();
       map.getCanvas().style.cursor = "";
