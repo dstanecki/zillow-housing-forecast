@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ if eq .Values.environment "prod" }}mariadb-prod{{ else }}mariadb-dev{{ end }}
+  name: {{ if eq .Values.environment "prod" }}mariadb-prod-headless{{ else }}mariadb-dev-headless{{ end }}
   labels:
     io.kompose.service: mariadb
 spec:
