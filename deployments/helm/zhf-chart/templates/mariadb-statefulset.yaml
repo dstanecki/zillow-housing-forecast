@@ -1,0 +1,99 @@
+# HEADLESS SERVICE if I ever add read replicas
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ if eq .Values.environment "prod" }}mariadb-prod{{ else }}mariadb-dev{{ end }}
+  labels:
+    io.kompose.service: mariadb
+spec:
+  clusterIP: None  # headless for stable DNS: <statefulset-name>-0.<svc>.<ns>.svc
+  ports:
+    - name: mysql
+      port: 3306
+      targetPort: 3306
+  selector:
+    io.kompose.service: mariadb
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    io.kompose.service: mariadb
+  name: {{ if eq .Values.environment "prod" }}mariadb-prod{{ else }}mariadb-dev{{ end }}
+spec:
+  serviceName: {{ if eq .Values.environment "prod" }}mariadb-prod{{ else }}mariadb-dev{{ end }}
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: mariadb
+  podManagementPolicy: OrderedReady
+  updateStrategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        io.kompose.service: mariadb
+    spec:
+      {{- if gt (int (default 1 .Values.replicaCount)) 1}}
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: io.kompose.service
+                      operator: In
+                      values:
+                        - mariadb
+                topologyKey: kubernetes.io/hostname
+      {{- end}}
+      containers:
+        - name: mariadb
+          image: "{{ .Values.dbImage.repository }}:{{ .Values.dbImage.tag }}"
+          ports:
+            - containerPort: 3306
+              name: mysql
+              protocol: TCP
+          env:
+            - name: MYSQL_DATABASE
+              value: ZillowHomeValueForecast
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-password
+                  key: DB_PASSWORD
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/mysql
+          startupProbe:
+            exec:
+              command: ["sh","-c","/usr/local/bin/healthcheck.sh"]
+            initialDelaySeconds: 30
+            periodSeconds: 5
+            failureThreshold: 10
+          readinessProbe:
+            tcpSocket:
+              port: 3306
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            failureThreshold: 3
+      restartPolicy: Always
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        {{- if .Values.storage.storageClass }}
+        storageClassName: "{{ .Values.storage.storageClass }}"
+        {{- end }}
+        resources:
+          requests:
+            storage: {{ default "10Gi" .Values.storage.size }}
