@@ -4,12 +4,13 @@
 Address the time-poorness of real estate agents by providing a centralized point of zip-level data insights. Stand out from the competition by focusing on this single niche and providing unparalleled ease of use. 
 
 ### High 
+- Heatmap toggling, performance improvements
+- Before enabling db writes, e.g. google users being written to db, need a at minimum nightly backup solution to the cloud that works with my GKE failover
 - Implement tracing
 - Implement confidence band
 
 ### Medium
 - Solution for aligning Redis cache with revolving data. (Actions workflow needs to trigger a redis clear on success)
-- Venture into statefulness (e.g., add a dark mode switch and store that in user's browser cache)
 - Monitor SD card health to have warning signs before failure
 - Secure dashboards (Prom + Grafana security concerns)
 - Traefik dashboard?
