@@ -17,12 +17,12 @@ environment: "prod"
 appImage:
   repository: dstanecki/zhf
   pullPolicy: IfNotPresent
-  tag: "v1.0.10"
+  tag: "v1.0.11"
 
 dbImage:
   repository: dstanecki/zhf-mariadb
   pullPolicy: IfNotPresent
-  tag: "v1.0.2"
+  tag: "v1.0.3"
 
 ingress:
   enabled: true
