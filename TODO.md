@@ -4,6 +4,7 @@
 Address the time-poorness of real estate agents by providing a centralized point of zip-level data insights. Stand out from the competition by focusing on this single niche and providing unparalleled ease of use. 
 
 ### High 
+- Add oauth secret to Terraform code + github secrets
 - Heatmap toggling, performance improvements
 - Before enabling db writes, e.g. google users being written to db, need a at minimum nightly backup solution to the cloud that works with my GKE failover
 - Implement tracing
