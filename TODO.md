@@ -5,6 +5,7 @@ Address the time-poorness of real estate agents by providing a centralized point
 
 ### High 
 - Heatmap toggling, performance improvements
+- Need Longhorn for HA across nodes
 - Before enabling db writes, e.g. google users being written to db, need a at minimum nightly backup solution to the cloud that works with my GKE failover
 - Implement tracing
 - Implement confidence band
