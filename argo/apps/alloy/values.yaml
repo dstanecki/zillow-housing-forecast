@@ -1,0 +1,60 @@
+# Minimal values for: DaemonSet, use existing ConfigMap, collect node logs, no Service.
+controller:
+  type: daemonset
+  minReadySeconds: 10
+
+alloy:
+  # Use the config from config.alloy
+  configMap:
+    create: false
+    name: alloy-config
+    key: config.alloy
+
+  # Keep UI port on for quick port-forwarding (no Service exposed).
+  enableHttpServerPort: true
+  listenAddr: 0.0.0.0
+  listenPort: 12345
+  listenScheme: HTTP
+  uiPathPrefix: /
+
+  # Common host mounts for log collection
+  mounts:
+    varlog: true
+    dockercontainers: false
+
+  # Light resources
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi
+
+  enableReporting: false
+
+# Use upstream image & defaults
+image:
+  repository: grafana/alloy
+  pullPolicy: IfNotPresent
+
+rbac:
+  create: true
+
+serviceAccount:
+  create: true
+  automountServiceAccountToken: true
+
+# Auto-reload on ConfigMap changes
+configReloader:
+  enabled: true
+
+service:
+  enabled: false
+
+networkPolicy:
+  enabled: false
+
+# CRDs not needed unless you rely on them explicitly
+crds:
+  create: false
