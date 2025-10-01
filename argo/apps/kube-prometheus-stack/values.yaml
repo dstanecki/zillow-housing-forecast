@@ -37,6 +37,21 @@ grafana:
     limits:
       memory: 200Mi
       cpu: 200m
+  sidecar:
+    dashboards:
+      enabled: true
+      label: grafana_dashboard
+      labelValue: "1"
+      searchNamespace: "system"       # scan only the system namespace (use "ALL" if Grafana runs elsewhere)
+      folder: /var/lib/grafana/dashboards/default
+      provider:
+        name: sidecarProvider
+        orgid: 1
+        folder: ""                    # root folder in Grafana
+        type: file
+        disableDelete: false
+        allowUiUpdates: true
+
 
 nodeExporter:
   enabled: false
