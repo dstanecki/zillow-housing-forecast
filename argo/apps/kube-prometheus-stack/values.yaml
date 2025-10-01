@@ -39,7 +39,7 @@ grafana:
       cpu: 200m
 
 nodeExporter:
-  enabled: true
+  enabled: false
 
 kube-state-metrics:
   enabled: true
