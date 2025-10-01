@@ -1,3 +1,11 @@
+additionalArguments:
+  - --metrics.prometheus=true
+  - --metrics.prometheus.entryPoint=metrics
+
+entryPoints:
+  metrics:
+    address: ":9101"
+
 ports:
   metrics:
     port: 9101
