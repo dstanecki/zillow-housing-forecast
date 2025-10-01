@@ -59,7 +59,7 @@ grafana:
           type: loki
           access: proxy
           url: http://loki-gateway.system.svc.cluster.local
-          isDefault: true
+          isDefault: false
 
 nodeExporter:
   enabled: false
