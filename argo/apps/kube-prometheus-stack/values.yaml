@@ -51,6 +51,15 @@ grafana:
         type: file
         disableDelete: false
         allowUiUpdates: true
+  datasources:
+    datasources.yaml:
+      apiVersion: 1
+      datasources:
+        - name: Loki
+          type: loki
+          access: proxy
+          url: http://loki-gateway.system.svc.cluster.local
+          isDefault: true
 
 nodeExporter:
   enabled: false
