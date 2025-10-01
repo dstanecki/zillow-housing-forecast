@@ -3,7 +3,7 @@ kind: ServiceMonitor
 metadata:
   name: traefik
   labels:
-    release: prometheus
+    release: kube-prometheus-stack
   namespace: kube-system
 spec:
   selector:
