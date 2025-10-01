@@ -4,12 +4,12 @@ additionalArguments:
 
 entryPoints:
   metrics:
-    address: ":9101"
+    address: ":9100"
 
 ports:
   metrics:
-    port: 9101
-    targetPort: 9101
+    port: 9100
+    targetPort: 9100
     expose: 
       default: true
     protocol: TCP
