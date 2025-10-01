@@ -66,7 +66,7 @@ data:
               },
               "direction": "backward",
               "editorMode": "builder",
-              "expr": "{instance=~\"^prod/app-prod.*\"} |= ``",
+              "expr": "{instance=~"^prod/app-prod.*"} != `/ready` or `/metrics`",
               "queryType": "range",
               "refId": "A"
             }
