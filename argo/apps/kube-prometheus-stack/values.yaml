@@ -42,7 +42,7 @@ grafana:
       enabled: true
       label: grafana_dashboard
       labelValue: "1"
-      searchNamespace: "system"       # scan only the system namespace (use "ALL" if Grafana runs elsewhere)
+      searchNamespace: "monitoring"      
       folder: /var/lib/grafana/dashboards/default
       provider:
         name: sidecarProvider
@@ -51,7 +51,6 @@ grafana:
         type: file
         disableDelete: false
         allowUiUpdates: true
-
 
 nodeExporter:
   enabled: false
