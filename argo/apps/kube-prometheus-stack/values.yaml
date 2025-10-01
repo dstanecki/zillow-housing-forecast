@@ -41,14 +41,6 @@ grafana:
 nodeExporter:
   enabled: true
 
-prometheus-node-exporter:
-  extraArgs:
-    - --web.listen-address=:9101
-  containerPort: 9101
-  service:
-    port: 9101
-    targetPort: 9101
-
 kube-state-metrics:
   enabled: true
   nodeSelector:
