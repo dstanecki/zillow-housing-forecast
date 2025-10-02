@@ -2,13 +2,21 @@ deploymentMode: SingleBinary # Smallest option, designed only for up to 10GB/day
 singleBinary:
   replicas: 1
   autoscaling:
-    enabled: true
-    minReplicas: 1
-    maxReplicas: 3
-    targetCPUUtilizationPercentage: 60
+    enabled: false
   persistence:
     enabled: true
-    size: 20Gi
+    size: 30Gi
+
+  podSecurityContext:
+    fsGroup: 10001
+    fsGroupChangePolicy: OnRootMismatch
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "1Gi"
+    limits:
+      cpu: "2"
+      memory: "4Gi"
 
 loki:
   limits_config:
@@ -16,8 +24,10 @@ loki:
 
   compactor:
     retention_enabled: true
-    compaction_interval: 5m
     working_directory: /var/loki/compactor
+    delete_request_store: filesystem      # required when retention is enabled
+    delete_request_store_db_type: boltdb
+    delete_request_store_key_prefix: index/
 
   auth_enabled: false
   # TSDB with local filesystem
