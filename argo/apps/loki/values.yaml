@@ -1,21 +1,24 @@
-# Force monolithic deployment with one replica
-deploymentMode: SingleBinary
+deploymentMode: SingleBinary # Smallest option, designed only for up to 10GB/day
 singleBinary:
   replicas: 1
-  # IMPORTANT: don't create a PVC; use ephemeral emptyDir instead.
+  autoscaling:
+    enabled: true
+    minReplicas: 1
+    maxReplicas: 3
+    targetCPUUtilizationPercentage: 60
   persistence:
-    enabled: false
-
-  # Mount an emptyDir at /var/loki (writable, in-cluster)
-  extraVolumes:
-    - name: loki-data
-      emptyDir: {}            
-
-  extraVolumeMounts:
-    - name: loki-data
-      mountPath: /var/loki
+    enabled: true
+    size: 20Gi
 
 loki:
+  limits_config:
+    retention_period: 48h
+
+  compactor:
+    retention_enabled: true
+    compaction_interval: 5m
+    working_directory: /var/loki/compactor
+
   auth_enabled: false
   # TSDB with local filesystem
   schemaConfig:
@@ -35,6 +38,7 @@ loki:
     type: filesystem
     filesystem:
       chunks_directory: /var/loki/chunks
+      rules_directory: /var/loki/rules
 
 # Keep the gateway (ClusterIP) so Alloy/Grafana can talk to http://loki-gateway
 gateway:
