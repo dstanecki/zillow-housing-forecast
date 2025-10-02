@@ -1,1 +1,1 @@
-This directory contains infrastructure components that are not application-specific (cert-manager clusterissuers, cloudflare tunnel deployment, traefik configuration)
+Everything managed by ArgoCD. Uses parent app-of-apps and child apps
