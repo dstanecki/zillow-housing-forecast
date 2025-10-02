@@ -10,8 +10,7 @@ tempo:
       local:
         path: /var/tempo/traces
       wal:
-        enabled: true
-        dir: /var/tempo/wal
+        path: /var/tempo/wal
 
 service:
   type: ClusterIP
