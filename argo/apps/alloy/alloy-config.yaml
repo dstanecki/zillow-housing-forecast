@@ -17,3 +17,18 @@ data:
     loki.write "local" {
       endpoint { url = "http://loki-gateway.monitoring.svc.cluster.local/loki/api/v1/push" }
     }
+
+    otelcol.receiver.otlp "traces" {
+      grpc { endpoint = "0.0.0.0:4317" }
+      http { endpoint = "0.0.0.0:4318" }
+    }
+
+    otelcol.exporter.otlp "tempo" {
+      client {
+        endpoint = "tempo.monitoring.svc.cluster.local:4317"
+        tls { insecure = true }
+      }
+    }
+
+    otelcol.processor.batch "default" {}
+
