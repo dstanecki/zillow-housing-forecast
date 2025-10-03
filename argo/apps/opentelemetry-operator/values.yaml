@@ -1,0 +1,36 @@
+manager:
+  replicaCount: 1
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+# Enable all instrumentation images you care about
+autoInstrumentation:
+  java:
+    enabled: true
+  nodejs:
+    enabled: true
+  python:
+    enabled: true
+  dotnet:
+    enabled: true
+  go:
+    enabled: true
+
+# Set tolerations/affinity if you want to pin operator pods
+tolerations: []
+affinity: {}
+
+# RBAC is enabled by default; keep it unless you have custom requirements
+rbac:
+  create: true
+
+# Webhook is required for injection
+admissionWebhooks:
+  create: true
+  patch:
+    enabled: true
