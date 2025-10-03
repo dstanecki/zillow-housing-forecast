@@ -2,10 +2,11 @@ replicaCount: 1
 
 createRbacPermissions: true
 
-autoInstrumentation:
-  python:
-    repository: ghcr.io/open-telemetry/opentelemetry-operator/autoinstrumentation-python
-    tag: "0.58b0"
+manager:
+  autoInstrumentation:
+    python:
+      repository: ghcr.io/open-telemetry/opentelemetry-operator/autoinstrumentation-python
+      tag: "0.58b0"
 
 admissionWebhooks:
   create: true
