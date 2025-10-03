@@ -1,6 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  annotations:
+    instrumentation.opentelemetry.io/inject-python: "true"
+    instrumentation.opentelemetry.io/container-names: "app"
   labels:
     io.kompose.service: app
     environment: {{ .Values.environment }}
@@ -94,5 +97,9 @@ spec:
                 secretKeyRef: 
                   name: azure-ai-openapi-key
                   key: SUBSCRIPTION_KEY
+            - name: OTEL_SERVICE_NAME
+              value: api
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: http://alloy.observability.svc.cluster.local:4318
       restartPolicy: Always
 
