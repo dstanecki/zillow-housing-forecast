@@ -1,35 +1,28 @@
 deploymentMode: SingleBinary # Smallest option, designed only for up to 10GB/day
+
 singleBinary:
   replicas: 1
   autoscaling:
     enabled: false
-  persistence:
-    enabled: true
+  persistence: 
     size: 30Gi
 
-  podSecurityContext:
-    fsGroup: 10001
-    fsGroupChangePolicy: OnRootMismatch
-  resources:
-    requests:
-      cpu: "500m"
-      memory: "1Gi"
-    limits:
-      cpu: "2"
-      memory: "4Gi"
-
 loki:
-  limits_config:
-    retention_period: 48h
+  readinessProbe: # Default readiness probe
+    httpGet:
+      path: /ready
+      port: http-metrics
+    initialDelaySeconds: 30
+    timeoutSeconds: 1
 
-  compactor:
-    retention_enabled: true
-    working_directory: /var/loki/compactor
-    delete_request_store: filesystem      # required when retention is enabled
-    delete_request_store_db_type: boltdb
-    delete_request_store_key_prefix: index/
+  server: # Default ports and timeout
+    http_listen_port: 3100
+    grpc_listen_port: 9095
+    http_server_read_timeout: 600s
+    http_server_write_timeout: 600s
 
   auth_enabled: false
+
   # TSDB with local filesystem
   schemaConfig:
     configs:
@@ -54,6 +47,7 @@ loki:
 gateway:
   enabled: true
 
+# Specifies whether memcached cache should be enabled
 chunksCache:
   enabled: false
 resultsCache:
